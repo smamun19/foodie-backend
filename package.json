@@ -5,6 +5,7 @@
   "repository": "https://github.com/smamun19/foodie-backend.git",
   "author": "<smamun19@gmail.com>",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "dev": "tsnd --respawn --transpile-only --exit-child src/index.ts ",
     "build": "tsc -p tsconfig.json",
@@ -12,8 +13,19 @@
     "gittu": "git add . && git commit && git push"
   },
   "dependencies": {
+    "@deepkit/core": "^1.0.1-alpha.61",
+    "@deepkit/injector": "^1.0.1-alpha.68",
+    "@deepkit/logger": "^1.0.1-alpha.65",
+    "@deepkit/orm": "^1.0.1-alpha.62",
+    "@deepkit/postgres": "^1.0.1-alpha.62",
+    "@deepkit/sql": "^1.0.1-alpha.68",
+    "@deepkit/stopwatch": "^1.0.1-alpha.68",
+    "@deepkit/type": "^1.0.1-alpha.62",
+    "@deepkit/type-compiler": "^1.0.1-alpha.67",
     "fastify": "^3.27.4",
-    "fastify-swagger": "^5.0.0"
+    "fastify-swagger": "^5.0.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.5.5"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
