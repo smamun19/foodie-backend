@@ -1,9 +1,8 @@
 {
-  "reflection": true,
+  
   "compilerOptions": {
 
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
     /* Projects */

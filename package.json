@@ -13,19 +13,8 @@
     "gittu": "git add . && git commit && git push"
   },
   "dependencies": {
-    "@deepkit/core": "^1.0.1-alpha.61",
-    "@deepkit/injector": "^1.0.1-alpha.68",
-    "@deepkit/logger": "^1.0.1-alpha.65",
-    "@deepkit/orm": "^1.0.1-alpha.62",
-    "@deepkit/postgres": "^1.0.1-alpha.62",
-    "@deepkit/sql": "^1.0.1-alpha.68",
-    "@deepkit/stopwatch": "^1.0.1-alpha.68",
-    "@deepkit/type": "^1.0.1-alpha.62",
-    "@deepkit/type-compiler": "^1.0.1-alpha.67",
     "fastify": "^3.27.4",
-    "fastify-swagger": "^5.0.0",
-    "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.5.5"
+    "fastify-swagger": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
