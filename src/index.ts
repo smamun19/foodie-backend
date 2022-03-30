@@ -1,13 +1,19 @@
 import fastify from "fastify";
-import { env } from "process";
 import fastifySwagger from "fastify-swagger";
 import userRoutes from "./routes/userRoutes";
 import { version } from "../package.json";
 import productsRoutes from "./routes/porductRoutes";
-
-const port = parseInt(env.PORT ?? "8080", 10);
+import { userSchemas } from "./controller/user/userSchema";
+import { defaultErrorHandler } from "./utils/errorHandler";
+import { notFoundHandler } from "./utils/notFoundHandler";
 
 const app = fastify({ logger: true });
+
+const port = parseInt(process.env.PORT ?? "8080", 10);
+
+for (const schema of [...userSchemas]) {
+  app.addSchema(schema);
+}
 
 app.register(fastifySwagger, {
   routePrefix: "/api/doc",
@@ -26,6 +32,8 @@ app.register(fastifySwagger, {
 
 app.register(userRoutes, { prefix: "/api/user" });
 app.register(productsRoutes, { prefix: "/api/products" });
+app.register(notFoundHandler);
+app.setErrorHandler(defaultErrorHandler);
 
 const start = (async () => {
   try {
