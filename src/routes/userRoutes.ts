@@ -4,18 +4,26 @@ import { signin, signup } from "../controller/user/userController";
 
 import { $ref } from "../controller/user/userSchema";
 
-const opts = { schema: { tags: ["User"] } };
-
 const userRoutes = async (router: FastifyInstance) => {
+  const SchemaOpts = { tags: ["Users"], security: [{ jwt: ["USER"] }] };
   router.post(
     "/signup",
-    { schema: { tags: ["User"], body: $ref("createUserSchema") } },
+    {
+      schema: {
+        ...SchemaOpts,
+
+        body: $ref("createUserSchema"),
+      },
+      preValidation: [router.auth],
+    },
     signup
   );
 
   router.post(
     "/signin",
-    { schema: { tags: ["User"], body: $ref("loginSchema") } },
+    {
+      schema: { ...SchemaOpts, body: $ref("loginSchema") },
+    },
     signin
   );
 };

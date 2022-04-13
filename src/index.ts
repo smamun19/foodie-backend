@@ -1,34 +1,36 @@
 import fastify from "fastify";
 import fastifySwagger from "fastify-swagger";
 import userRoutes from "./routes/userRoutes";
-import { version } from "../package.json";
+import fastifyJwt, { JWT } from "fastify-jwt";
 import productsRoutes from "./routes/porductRoutes";
 import { userSchemas } from "./controller/user/userSchema";
 import { defaultErrorHandler } from "./utils/errorHandler";
 import { notFoundHandler } from "./utils/notFoundHandler";
+import { jwtDecorate, jwtHook } from "./utils/auth";
+import { swaggerObj } from "./utils/swagger";
+
+declare module "fastify" {
+  interface FastifyRequest {
+    jwt: JWT;
+  }
+  export interface FastifyInstance {
+    auth: any;
+  }
+}
 
 const app = fastify({ logger: true });
 
-const port = parseInt(process.env.PORT ?? "8080", 10);
+export const port = parseInt(process.env.PORT ?? "8080", 10);
+
+app.register(fastifyJwt, { secret: process.env.JWT_SECRET ?? "ohno!" });
+app.decorate("auth", jwtDecorate);
+app.addHook("preValidation", jwtHook);
 
 for (const schema of [...userSchemas]) {
   app.addSchema(schema);
 }
 
-app.register(fastifySwagger, {
-  routePrefix: "/api/doc",
-  prefix: "/api",
-  exposeRoute: true,
-  staticCSP: true,
-
-  openapi: {
-    info: {
-      title: "Foodie API",
-      description: "API for Foodie",
-      version,
-    },
-  },
-});
+app.register(fastifySwagger, swaggerObj);
 
 app.register(userRoutes, { prefix: "/api/user" });
 app.register(productsRoutes, { prefix: "/api/products" });
