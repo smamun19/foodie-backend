@@ -1,5 +1,18 @@
 import { FastifyReply, FastifyRequest } from "fastify";
+import { VerifyPayloadType } from "fastify-jwt";
 import { KnownError } from "./response";
+import { Roles } from "./types/types";
+
+type CustomVerifyPayoadType = {
+  id: string;
+  name: string;
+  email: string;
+  roles: Roles[];
+  updatedAt: string;
+  createdAt: string;
+  iat: string;
+  exp: string;
+} & VerifyPayloadType;
 
 export const jwtDecorate = async (req: FastifyRequest, res: FastifyReply) => {
   try {
@@ -14,13 +27,11 @@ export const jwtDecorate = async (req: FastifyRequest, res: FastifyReply) => {
 
     const token = authToken?.replace("Bearer ", "");
 
-    const decoded = await req.jwt.verify(token);
+    const decoded: CustomVerifyPayoadType = await req.jwt.verify(token);
     if (!decoded.roles) {
       throw new KnownError(400, "JWT does not contain any scope.");
     }
     req.user = decoded;
-    console.log(typeof decoded);
-    console.log(req.user);
   } catch (err) {
     res.send(err);
   }
