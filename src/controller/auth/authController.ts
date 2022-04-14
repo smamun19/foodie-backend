@@ -23,20 +23,24 @@ export const signin = async (
   req: FastifyRequest<{ Body: LoginInput }>,
   res: FastifyReply
 ) => {
-  const { email, password } = req.body;
+  const { email: identity, password: pass } = req.body;
 
-  const user = await prisma.user.findUnique({
-    where: { email },
-    rejectOnNotFound: () => new KnownError(404, "User not found"),
-  });
+  const { createdAt, email, id, name, password, roles, updatedAt } =
+    await prisma.user.findUnique({
+      where: { email: identity },
+      rejectOnNotFound: () => new KnownError(404, "User not found"),
+    });
 
-  const result = await comparePassword(password, user.password);
+  const result = await comparePassword(pass, password);
 
   if (!result) {
     return new KnownError(400, "Password do not match");
   }
 
-  const token = await req.jwt.sign(user, { expiresIn: "30d" });
+  const token = await req.jwt.sign(
+    { id, name, email, roles, createdAt, updatedAt },
+    { expiresIn: "30d" }
+  );
 
   return resHandler(res, 201, "Success", { token });
   //   } catch (error) {
