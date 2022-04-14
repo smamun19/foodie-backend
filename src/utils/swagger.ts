@@ -18,7 +18,6 @@ export const swaggerObj: FastifyRegisterOptions<SwaggerOptions> | undefined = {
         },
         jwt: {
           type: "http",
-
           bearerFormat: "Bearer",
           scheme: "bearer",
         },

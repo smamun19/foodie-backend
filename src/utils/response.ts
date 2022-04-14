@@ -1,3 +1,5 @@
+import { FastifyReply } from "fastify";
+import { ServerResponse } from "http";
 import HttpStatusCode from "./HttpStatusCode";
 
 export class KnownError extends Error {
@@ -10,3 +12,12 @@ export class KnownError extends Error {
     this.name = "KnownError";
   }
 }
+
+export const resHandler = (
+  res: FastifyReply,
+  statusCode: HttpStatusCode,
+  message: string,
+  details: any = undefined
+) => {
+  return res.status(statusCode).send({ message, statusCode, details });
+};
