@@ -1,7 +1,7 @@
 import fastify from "fastify";
 import fastifySwagger from "fastify-swagger";
 import authRoutes from "./routes/authRoutes";
-import fastifyJwt, { JWT } from "fastify-jwt";
+import fastifyJwt from "fastify-jwt";
 import productsRoutes from "./routes/porductRoutes";
 import userRoutes from "./routes/userRoutes";
 import { userSchemas } from "./controller/user/userSchema";
@@ -9,7 +9,6 @@ import { defaultErrorHandler } from "./utils/errorHandler";
 import { notFoundHandler } from "./utils/notFoundHandler";
 import { jwtDecorate } from "./utils/auth";
 import { swaggerObj } from "./utils/swagger";
-import { Role, Roles } from "./utils/types/types";
 
 const app = fastify({ logger: false });
 

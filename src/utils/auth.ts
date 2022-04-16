@@ -29,7 +29,7 @@ export const jwtDecorate = async (req: FastifyRequest, res: FastifyReply) => {
 
     const decoded: CustomVerifyPayoadType = await req.jwt.verify(token);
     if (!decoded.roles) {
-      throw new KnownError(400, "JWT does not contain any scope.");
+      throw new KnownError(400, "JWT does not contain any roles.");
     }
     req.user = decoded;
   } catch (err) {

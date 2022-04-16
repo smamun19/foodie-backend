@@ -1,3 +1,5 @@
+import { JWT } from "fastify-jwt";
+
 export enum Role {
   VENDOR,
   USER,
