@@ -11,29 +11,6 @@ import { jwtDecorate } from "./utils/auth";
 import { swaggerObj } from "./utils/swagger";
 import { Role, Roles } from "./utils/types/types";
 
-declare module "fastify" {
-  interface FastifyRequest {
-    jwt: JWT;
-  }
-  interface FastifyInstance {
-    auth: any;
-  }
-}
-declare module "fastify-jwt" {
-  interface FastifyJWT {
-    user: {
-      id: string;
-      name: string;
-      email: string;
-      roles: Roles[];
-      updatedAt: string;
-      createdAt: string;
-      iat: string;
-      exp: string;
-    };
-  }
-}
-
 const app = fastify({ logger: false });
 
 const port = parseInt(process.env.PORT ?? "8080", 10);
