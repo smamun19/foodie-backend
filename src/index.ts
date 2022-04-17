@@ -13,6 +13,10 @@ import { swaggerObj } from "./utils/swagger";
 const app = fastify({ logger: false });
 
 const port = parseInt(process.env.PORT ?? "8080", 10);
+app.get("/", function (request, reply) {
+  console.log("Hello");
+  reply.send({ hello: "world" });
+});
 
 app.register(fastifyJwt, {
   secret: process.env.JWT_SECRET ?? "ohno!",
@@ -37,7 +41,7 @@ app.setErrorHandler(defaultErrorHandler);
 
 const start = (async () => {
   try {
-    await app.listen(port);
+    await app.listen(port, "::");
     console.log(`Server running at http://localhost:${port}`);
     console.log(`Swagger doc at at http://localhost:${port}/api/doc`);
   } catch (error) {
