@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import { signup } from "../controller/user/userController";
+import { signin, signup } from "../controller/auth/authController";
 
 const opts = { schema: { tags: ["Product"] } };
 
