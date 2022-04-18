@@ -13,10 +13,6 @@ import { swaggerObj } from "./utils/swagger";
 const app = fastify({ logger: false });
 
 const port = parseInt(process.env.PORT ?? "8080", 10);
-app.get("/", function (request, reply) {
-  console.log("Hello");
-  reply.send({ hello: "world" });
-});
 
 app.register(fastifyJwt, {
   secret: process.env.JWT_SECRET ?? "ohno!",

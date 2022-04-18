@@ -1,6 +1,11 @@
 import { FastifyInstance } from "fastify";
 
-import { signin, signup } from "../controller/auth/authController";
+import {
+  resetPass,
+  resetPassReq,
+  signin,
+  signup,
+} from "../controller/auth/authController";
 
 import { $ref } from "../controller/user/userSchema";
 
@@ -25,6 +30,22 @@ const authRoutes = async (router: FastifyInstance) => {
       schema: { ...SchemaOpts, body: $ref("loginSchema") },
     },
     signin
+  );
+
+  router.post(
+    "/reset-req",
+    {
+      schema: { ...SchemaOpts, body: $ref("resetPassReqSchema") },
+    },
+    resetPassReq
+  );
+
+  router.post(
+    "/reset",
+    {
+      schema: { ...SchemaOpts, body: $ref("resetPassSchema") },
+    },
+    resetPass
   );
 };
 
