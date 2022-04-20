@@ -1,12 +1,16 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import prisma from "../../db/prisma";
+import { sendEmail } from "../../utils/email";
+import { generateOtp, verifyOtp } from "../../utils/otp";
 import { comparePassword, hashPassword } from "../../utils/password";
 import { KnownError, resHandler } from "../../utils/response";
 import {
   CreateUserInput,
   LoginInput,
+  OtpInput,
   ResetPassInput,
   ResetPassReqInput,
+  VerifyOtpInput,
 } from "../user/userSchema";
 
 export const signup = async (
@@ -18,6 +22,10 @@ export const signup = async (
   await prisma.user.create({
     data: { name, roles: ["USER"], email, password: hashedPassword },
   });
+
+  const otp = generateOtp(email);
+
+  sendEmail(email, otp);
   return resHandler(res, 201, "Success");
 };
 
@@ -59,7 +67,9 @@ export const resetPassReq = async (
       new KnownError(404, "User not found. Please sign up first"),
   });
 
-  //Set email otp here
+  const otp = generateOtp(email);
+
+  sendEmail(email, otp);
 
   return resHandler(res, 200, "Success");
 };
@@ -85,4 +95,24 @@ export const resetPass = async (
     data: { password: hashedPassword },
   });
   return resHandler(res, 200, "Success");
+};
+
+export const sendOtp = async (
+  req: FastifyRequest<{ Body: OtpInput }>,
+  res: FastifyReply
+) => {
+  const { email } = req.body;
+  const otp = generateOtp(email);
+
+  sendEmail(email, otp);
+  resHandler(res, 200, "Success");
+};
+
+export const verifyotp = async (
+  req: FastifyRequest<{ Body: VerifyOtpInput }>,
+  res: FastifyReply
+) => {
+  const { email, otp } = req.body;
+  const result = verifyOtp(email, otp);
+  resHandler(res, 200, "Success", result);
 };
