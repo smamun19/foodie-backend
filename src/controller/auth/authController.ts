@@ -11,22 +11,35 @@ import {
   ResetPassInput,
   ResetPassReqInput,
   VerifyOtpInput,
-} from "../user/userSchema";
+} from "./authSchema";
 
 export const signup = async (
   req: FastifyRequest<{ Body: CreateUserInput }>,
   res: FastifyReply
 ) => {
-  const { email, name, password } = req.body;
-  const hashedPassword = await hashPassword(password);
-  await prisma.user.create({
-    data: { name, roles: ["USER"], email, password: hashedPassword },
-  });
+  console.log(req.body);
+  try {
+    const { email, name, password } = req.body;
 
-  const otp = generateOtp(email);
+    // const isExists = await prisma.user.findUnique({ where: { email } });
+    // if (isExists) {
+    //   throw new KnownError(400, "This email is already registered.");
+    // }
+    const hashedPassword = await hashPassword(password);
+    await prisma.user.create({
+      data: { name, roles: ["USER"], email, password: hashedPassword },
+    });
 
-  sendEmail(email, otp);
-  return resHandler(res, 201, "Success");
+    // const otp = generateOtp(email);
+
+    // sendEmail(email, otp);
+    return resHandler(res, 201, "Success");
+  } catch (error: any) {
+    if (error.meta.target[0] === "email") {
+      return resHandler(res, 400, "This email is already registered.");
+    }
+    throw new Error(error);
+  }
 };
 
 export const signin = async (
@@ -44,7 +57,7 @@ export const signin = async (
   const result = await comparePassword(pass, password);
 
   if (!result) {
-    return new KnownError(400, "Password do not match");
+    throw new KnownError(400, "Password do not match");
   }
 
   const token = await req.jwt.sign(
