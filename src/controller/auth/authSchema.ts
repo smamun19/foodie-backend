@@ -37,14 +37,12 @@ const resetPassReqSchema = z.object({
 
 const resetPassSchema = z.object({
   ...userCore,
-  otp: z.number({
-    required_error: "Otp is required",
-    invalid_type_error: "Otp must be number",
-  }),
-  newPassword: z.string({
-    required_error: "New password is required",
-    invalid_type_error: "New password must be string",
-  }),
+  newPassword: z
+    .string({
+      required_error: "New password is required",
+      invalid_type_error: "New password must be string",
+    })
+    .min(6, { message: "Must be 6 or more characters long" }),
 });
 
 const otpSchema = z.object({

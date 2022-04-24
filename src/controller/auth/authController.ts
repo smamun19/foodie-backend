@@ -17,7 +17,6 @@ export const signup = async (
   req: FastifyRequest<{ Body: CreateUserInput }>,
   res: FastifyReply
 ) => {
-  console.log(req.body);
   try {
     const { email, name, password } = req.body;
 
@@ -81,17 +80,18 @@ export const resetPassReq = async (
   });
 
   const otp = generateOtp(email);
+  console.log(otp);
 
-  sendEmail(email, otp);
+  //sendEmail(email, otp);
 
-  return resHandler(res, 200, "Success");
+  return resHandler(res, 200, "Success", otp);
 };
 
 export const resetPass = async (
   req: FastifyRequest<{ Body: ResetPassInput }>,
   res: FastifyReply
 ) => {
-  const { email, newPassword, otp } = req.body;
+  const { email, newPassword } = req.body;
 
   await prisma.user.findUnique({
     where: { email },
@@ -117,7 +117,9 @@ export const sendOtp = async (
   const { email } = req.body;
   const otp = generateOtp(email);
 
-  sendEmail(email, otp);
+  console.log(otp);
+
+  //sendEmail(email, otp);
   resHandler(res, 200, "Success");
 };
 
@@ -126,6 +128,8 @@ export const verifyotp = async (
   res: FastifyReply
 ) => {
   const { email, otp } = req.body;
+
   const result = verifyOtp(email, otp);
+
   resHandler(res, 200, "Success", result);
 };
