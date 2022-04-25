@@ -16,7 +16,6 @@ type CustomVerifyPayoadType = {
 
 export const jwtDecorate = async (req: FastifyRequest, res: FastifyReply) => {
   try {
-    console.log("Node fetch working");
     const authToken = req.headers.authorization;
     if (!authToken) {
       throw new KnownError(400, "No token provided");

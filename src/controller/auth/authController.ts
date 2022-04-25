@@ -19,19 +19,15 @@ export const signup = async (
 ) => {
   try {
     const { email, name, password } = req.body;
-
-    // const isExists = await prisma.user.findUnique({ where: { email } });
-    // if (isExists) {
-    //   throw new KnownError(400, "This email is already registered.");
-    // }
     const hashedPassword = await hashPassword(password);
+
     await prisma.user.create({
       data: { name, roles: ["USER"], email, password: hashedPassword },
     });
 
-    // const otp = generateOtp(email);
+    const otp = generateOtp(email);
 
-    // sendEmail(email, otp);
+    sendEmail(email, otp);
     return resHandler(res, 201, "Success");
   } catch (error: any) {
     if (error.meta.target[0] === "email") {
@@ -82,7 +78,7 @@ export const resetPassReq = async (
   const otp = generateOtp(email);
   console.log(otp);
 
-  //sendEmail(email, otp);
+  sendEmail(email, otp);
 
   return resHandler(res, 200, "Success", otp);
 };
@@ -98,8 +94,6 @@ export const resetPass = async (
     rejectOnNotFound: () =>
       new KnownError(404, "User not found. Please sign up first"),
   });
-
-  //verify otp here
 
   const hashedPassword = await hashPassword(newPassword);
 
@@ -119,7 +113,7 @@ export const sendOtp = async (
 
   console.log(otp);
 
-  //sendEmail(email, otp);
+  sendEmail(email, otp);
   resHandler(res, 200, "Success");
 };
 
