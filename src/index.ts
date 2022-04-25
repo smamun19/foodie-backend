@@ -4,7 +4,7 @@ import authRoutes from "./routes/authRoutes";
 import fastifyJwt from "fastify-jwt";
 import productsRoutes from "./routes/porductRoutes";
 import userRoutes from "./routes/userRoutes";
-import { userSchemas } from "./controller/user/userSchema";
+import { userSchemas } from "./controller/auth/authSchema";
 import { defaultErrorHandler } from "./utils/errorHandler";
 import { notFoundHandler } from "./utils/notFoundHandler";
 import { jwtDecorate } from "./utils/auth";
@@ -37,7 +37,7 @@ app.setErrorHandler(defaultErrorHandler);
 
 const start = (async () => {
   try {
-    await app.listen(port);
+    await app.listen(port, "::");
     console.log(`Server running at http://localhost:${port}`);
     console.log(`Swagger doc at at http://localhost:${port}/api/doc`);
   } catch (error) {
