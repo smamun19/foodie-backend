@@ -60,7 +60,7 @@ export const signin = async (
     { expiresIn: "30d" }
   );
 
-  return resHandler(res, 200, "Success", { token });
+  return resHandler(res, 200, "Success", { token, name });
 };
 
 export const resetPassReq = async (
