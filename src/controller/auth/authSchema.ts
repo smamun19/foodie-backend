@@ -53,6 +53,28 @@ const verifyOtpSchema = z.object({
   otp: z.string(),
 });
 
+const createVoucherSchema = z.object({
+  name: z.string().nonempty(),
+  value: z.number().nonnegative(),
+  isActive: z.boolean().optional(),
+  details: z.string().min(20).max(100).optional(),
+});
+
+const updateVoucherSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  value: z.number().nonnegative().optional(),
+  isActive: z.boolean().optional(),
+  details: z.string().min(20).max(100).optional(),
+});
+
+const findVoucherSchema = z.object({
+  name: z.string(),
+});
+
+export type CreateVoucherInput = z.infer<typeof createVoucherSchema>;
+export type UpdateVoucherInput = z.infer<typeof updateVoucherSchema>;
+export type FindVoucherInput = z.infer<typeof findVoucherSchema>;
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type ResetPassReqInput = z.infer<typeof resetPassReqSchema>;
@@ -67,4 +89,7 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   resetPassSchema,
   otpSchema,
   verifyOtpSchema,
+  createVoucherSchema,
+  updateVoucherSchema,
+  findVoucherSchema,
 });
