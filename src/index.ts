@@ -4,13 +4,15 @@ import authRoutes from "./routes/authRoutes";
 import fastifyJwt from "fastify-jwt";
 import productsRoutes from "./routes/porductRoutes";
 import userRoutes from "./routes/userRoutes";
+import adminRoutes from "./routes/adminRoutes";
 import { userSchemas } from "./controller/auth/authSchema";
+
 import { defaultErrorHandler } from "./utils/errorHandler";
 import { notFoundHandler } from "./utils/notFoundHandler";
 import { jwtDecorate } from "./utils/auth";
 import { swaggerObj } from "./utils/swagger";
 
-const app = fastify({ logger: false });
+const app = fastify({ logger: true });
 
 const port = parseInt(process.env.PORT ?? "8080", 10);
 
@@ -26,11 +28,11 @@ app.addHook("preValidation", (req, res, done) => {
 for (const schema of [...userSchemas]) {
   app.addSchema(schema);
 }
-
 app.register(fastifySwagger, swaggerObj);
 
 app.register(authRoutes, { prefix: "/api/auth" });
 app.register(userRoutes, { prefix: "/api/user" });
+app.register(adminRoutes, { prefix: "/api/admin" });
 app.register(productsRoutes, { prefix: "/api/products" });
 app.register(notFoundHandler);
 app.setErrorHandler(defaultErrorHandler);

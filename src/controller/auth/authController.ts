@@ -26,8 +26,9 @@ export const signup = async (
     });
 
     const otp = generateOtp(email);
+    console.log(otp);
 
-    sendEmail(email, otp);
+    //sendEmail(email, otp);
     return resHandler(res, 201, "Success");
   } catch (error: any) {
     if (error.meta.target[0] === "email") {
@@ -78,7 +79,7 @@ export const resetPassReq = async (
   const otp = generateOtp(email);
   console.log(otp);
 
-  sendEmail(email, otp);
+  //sendEmail(email, otp);
 
   return resHandler(res, 200, "Success", otp);
 };
@@ -113,7 +114,7 @@ export const sendOtp = async (
 
   console.log(otp);
 
-  sendEmail(email, otp);
+  //sendEmail(email, otp);
   resHandler(res, 200, "Success");
 };
 

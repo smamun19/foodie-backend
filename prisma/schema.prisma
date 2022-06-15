@@ -28,3 +28,13 @@ model User {
   roles     Role[]
   password  String
 }
+
+model Voucher {
+  id        Int      @id @default(autoincrement())
+  name      String
+  value     Int
+  isActive  Boolean  @default(true)
+  details   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

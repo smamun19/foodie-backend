@@ -1,8 +1,7 @@
 import { FastifyInstance } from "fastify";
+import { $ref } from "../controller/auth/authSchema";
 
-import { myinfo } from "../controller/user/userController";
-
-import { $ref } from "../controller/user/userSchema";
+import { addVoucher, myinfo } from "../controller/user/userController";
 
 const userRoutes = async (router: FastifyInstance) => {
   const SchemaOpts = { tags: ["User"], security: [{ jwt: [] }] };
@@ -15,6 +14,18 @@ const userRoutes = async (router: FastifyInstance) => {
       preValidation: [router.auth],
     },
     myinfo
+  );
+
+  router.post(
+    "/addVoucher",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("findVoucherSchema"),
+      },
+      preValidation: [router.auth],
+    },
+    addVoucher
   );
 };
 
