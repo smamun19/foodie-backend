@@ -12,7 +12,7 @@ import { notFoundHandler } from "./utils/notFoundHandler";
 import { jwtDecorate } from "./utils/auth";
 import { swaggerObj } from "./utils/swagger";
 
-const app = fastify({ logger: true });
+const app = fastify({ logger: false });
 
 const port = parseInt(process.env.PORT ?? "8080", 10);
 

@@ -17,7 +17,7 @@ const userRoutes = async (router: FastifyInstance) => {
   );
 
   router.post(
-    "/addVoucher",
+    "/addvoucher",
     {
       schema: {
         ...SchemaOpts,

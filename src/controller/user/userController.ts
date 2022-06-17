@@ -15,6 +15,8 @@ export const addVoucher = async (
   const { name } = req.body;
   const result = await prisma.voucher.findFirst({
     where: { name: { equals: name, mode: "insensitive" }, isActive: true },
+    rejectOnNotFound: () =>
+      new KnownError(404, "Voucher not found. Please try again"),
   });
-  return resHandler(res, 200, "Success", { result });
+  return resHandler(res, 200, "Success", { ...result });
 };
