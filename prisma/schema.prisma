@@ -38,3 +38,44 @@ model Voucher {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Restaurant {
+
+  id           String      @id @default(cuid())
+  title        String
+  isActive     Boolean     @default(true)
+  details      String?
+  item         Item[]
+  openingFrom  Int
+  openingTo    Int
+  location     String
+  photo        Attachment? @relation(fields: [attachmentId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  attachmentId String
+}
+
+model Item {
+  id           Int         @id @default(autoincrement())
+  name         String
+  price        Int
+  category     String
+  photo        Attachment? @relation(fields: [attachmentId], references: [id])
+  isActive     Boolean     @default(true)
+  details      String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  Restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId String?
+  attachmentId String?
+}
+
+model Attachment {
+  id         String       @id @default(cuid())
+  name       String
+  type       String
+  path       String[]
+  host       String       @default("/")
+  Item       Item[]
+  Restaurant Restaurant[]
+}
