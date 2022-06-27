@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import prisma from "../../db/prisma";
 import { KnownError, resHandler } from "../../utils/response";
-import { FindVoucherInput } from "../auth/authSchema";
+import { FindVoucherInput } from "../../schema/schemas";
 
 export const myinfo = async (req: FastifyRequest, res: FastifyReply) => {
   const user = req.user;

@@ -9,7 +9,7 @@ import {
   verifyotp,
 } from "../controller/auth/authController";
 
-import { $ref } from "../controller/auth/authSchema";
+import { $ref } from "../schema/schemas";
 
 const authRoutes = async (router: FastifyInstance) => {
   const SchemaOpts = { tags: ["Auth"] };

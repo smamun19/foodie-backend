@@ -58,7 +58,7 @@ model Restaurant {
 model Item {
   id           Int         @id @default(autoincrement())
   name         String
-  price        Int
+  price        Float
   category     String
   photo        Attachment? @relation(fields: [attachmentId], references: [id])
   isActive     Boolean     @default(true)
@@ -68,6 +68,17 @@ model Item {
   Restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
   restaurantId String?
   attachmentId String?
+  variation    Variation[]
+
+}
+
+model Variation {
+  id    Int    @id @default(autoincrement())
+  name  String
+  price Float
+
+  Item   Item? @relation(fields: [itemId], references: [id])
+  itemId Int?
 }
 
 model Attachment {

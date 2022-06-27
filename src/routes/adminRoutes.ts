@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { addVoucher, editVoucher } from "../controller/admin/adminController";
 
-import { $ref } from "../controller/auth/authSchema";
+import { $ref } from "../schema/schemas";
 
 const adminRoutes = async (router: FastifyInstance) => {
   const SchemaOpts = { tags: ["Admin"] };

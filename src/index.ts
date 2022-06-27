@@ -5,7 +5,7 @@ import fastifyJwt from "fastify-jwt";
 import productsRoutes from "./routes/porductRoutes";
 import userRoutes from "./routes/userRoutes";
 import adminRoutes from "./routes/adminRoutes";
-import { userSchemas } from "./controller/auth/authSchema";
+import { userSchemas } from "./schema/schemas";
 
 import { defaultErrorHandler } from "./utils/errorHandler";
 import { notFoundHandler } from "./utils/notFoundHandler";
