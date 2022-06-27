@@ -20,13 +20,29 @@ enum Role {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email     String   @unique
-  name      String
-  roles     Role[]
-  password  String
+  id         String       @id @default(cuid())
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  email      String       @unique
+  name       String
+  roles      Role[]
+  password   String
+  orders     Order[]
+  addresses  Location[]
+  favourites Restaurant[]
+}
+
+model Location {
+  id         Int      @id @default(autoincrement())
+  name       String
+  details    String
+  lat        Float
+  long       Float
+  extDetails String?
+  User       User?    @relation(fields: [userId], references: [id])
+  userId     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Voucher {
@@ -53,6 +69,9 @@ model Restaurant {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   attachmentId String
+  User         User?       @relation(fields: [userId], references: [id])
+  userId       String?
+  orders       Order[]
 }
 
 model Item {
@@ -69,16 +88,18 @@ model Item {
   restaurantId String?
   attachmentId String?
   variation    Variation[]
+  orders       Order[]     @relation("Order")
 
 }
 
 model Variation {
-  id    Int    @id @default(autoincrement())
-  name  String
-  price Float
-
-  Item   Item? @relation(fields: [itemId], references: [id])
-  itemId Int?
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Float
+  Item      Item?    @relation(fields: [itemId], references: [id])
+  itemId    Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Attachment {
@@ -89,4 +110,25 @@ model Attachment {
   host       String       @default("/")
   Item       Item[]
   Restaurant Restaurant[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  status       OrderStatus @default(Pending)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  User         User?       @relation(fields: [userId], references: [id])
+  userId       String?
+  Restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId String?
+  item         Item[]      @relation("Order")
+}
+
+enum OrderStatus {
+  Pending
+  Accepted
+  Rejected
+  Cancelled
 }
