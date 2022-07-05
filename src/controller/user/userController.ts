@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import prisma from "../../db/prisma";
 import { KnownError, resHandler } from "../../utils/response";
-import { FindVoucherInput } from "../auth/authSchema";
+import { FindVoucherInput } from "../../schema/schemas";
 
 export const myinfo = async (req: FastifyRequest, res: FastifyReply) => {
   const user = req.user;
@@ -15,6 +15,8 @@ export const addVoucher = async (
   const { name } = req.body;
   const result = await prisma.voucher.findFirst({
     where: { name: { equals: name, mode: "insensitive" }, isActive: true },
+    rejectOnNotFound: () =>
+      new KnownError(404, "Voucher not found. Please try again"),
   });
-  return resHandler(res, 200, "Success", { result });
+  return resHandler(res, 200, "Success", { ...result });
 };

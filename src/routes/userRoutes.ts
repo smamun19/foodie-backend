@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { $ref } from "../controller/auth/authSchema";
+import { $ref } from "../schema/schemas";
 
 import { addVoucher, myinfo } from "../controller/user/userController";
 
@@ -17,7 +17,7 @@ const userRoutes = async (router: FastifyInstance) => {
   );
 
   router.post(
-    "/addVoucher",
+    "/addvoucher",
     {
       schema: {
         ...SchemaOpts,

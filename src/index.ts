@@ -5,14 +5,14 @@ import fastifyJwt from "fastify-jwt";
 import productsRoutes from "./routes/porductRoutes";
 import userRoutes from "./routes/userRoutes";
 import adminRoutes from "./routes/adminRoutes";
-import { userSchemas } from "./controller/auth/authSchema";
+import { userSchemas } from "./schema/schemas";
 
 import { defaultErrorHandler } from "./utils/errorHandler";
 import { notFoundHandler } from "./utils/notFoundHandler";
 import { jwtDecorate } from "./utils/auth";
 import { swaggerObj } from "./utils/swagger";
 
-const app = fastify({ logger: true });
+const app = fastify({ logger: false });
 
 const port = parseInt(process.env.PORT ?? "8080", 10);
 

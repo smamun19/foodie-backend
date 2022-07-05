@@ -11,7 +11,7 @@ import {
   ResetPassInput,
   ResetPassReqInput,
   VerifyOtpInput,
-} from "./authSchema";
+} from "../../schema/schemas";
 
 export const signup = async (
   req: FastifyRequest<{ Body: CreateUserInput }>,

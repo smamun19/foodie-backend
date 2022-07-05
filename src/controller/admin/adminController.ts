@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import prisma from "../../db/prisma";
 import { KnownError, resHandler } from "../../utils/response";
-import { CreateVoucherInput, UpdateVoucherInput } from "../auth/authSchema";
+import { CreateVoucherInput, UpdateVoucherInput } from "../../schema/schemas";
 
 export const addVoucher = async (
   req: FastifyRequest<{ Body: CreateVoucherInput }>,

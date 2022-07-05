@@ -20,13 +20,29 @@ enum Role {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email     String   @unique
-  name      String
-  roles     Role[]
-  password  String
+  id         String       @id @default(cuid())
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  email      String       @unique
+  name       String
+  roles      Role[]
+  password   String
+  orders     Order[]
+  addresses  Location[]
+  favourites Restaurant[]
+}
+
+model Location {
+  id         Int      @id @default(autoincrement())
+  name       String
+  details    String
+  lat        Float
+  long       Float
+  extDetails String?
+  User       User?    @relation(fields: [userId], references: [id])
+  userId     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Voucher {
@@ -37,4 +53,93 @@ model Voucher {
   details   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Restaurant {
+
+  id           String      @id @default(cuid())
+  title        String
+  isActive     Boolean     @default(true)
+  details      String?
+  item         Item[]
+  openingFrom  Int
+  openingTo    Int
+  location     String
+  photo        Attachment? @relation(fields: [attachmentId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  attachmentId String
+  User         User?       @relation(fields: [userId], references: [id])
+  userId       String?
+  orders       Order[]
+}
+
+model Item {
+  id           Int           @id @default(autoincrement())
+  name         String
+  price        Float
+  category     String
+  photo        Attachment?   @relation(fields: [attachmentId], references: [id])
+  isActive     Boolean       @default(true)
+  details      String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  Restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id])
+  restaurantId String?
+  attachmentId String?
+  variation    Variation[]
+  OrderedItem  OrderedItem[]
+}
+
+model Variation {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Float
+  Item      Item?    @relation(fields: [itemId], references: [id])
+  itemId    Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Attachment {
+  id         String       @id @default(cuid())
+  name       String
+  type       String
+  path       String[]
+  host       String       @default("/")
+  Item       Item[]
+  Restaurant Restaurant[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model Order {
+  id           String        @id @default(cuid())
+  status       OrderStatus   @default(Pending)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  User         User?         @relation(fields: [userId], references: [id])
+  userId       String?
+  Restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id])
+  restaurantId String?
+  item         OrderedItem[]
+}
+
+model OrderedItem {
+  item      Item     @relation(fields: [itemId], references: [id])
+  itemId    Int
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Order     Order    @relation(fields: [orderId], references: [id])
+  orderId   String
+
+  @@id([orderId, itemId])
+}
+
+enum OrderStatus {
+  Pending
+  Accepted
+  Rejected
+  Cancelled
 }
