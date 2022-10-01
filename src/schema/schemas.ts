@@ -45,6 +45,21 @@ const resetPassSchema = z.object({
     .min(6, { message: "Must be 6 or more characters long" }),
 });
 
+const changePassSchema = z.object({
+  currentPassword: z
+    .string({
+      required_error: "password is required",
+      invalid_type_error: "password must be string",
+    })
+    .min(6, { message: "Must be 6 or more characters long" }),
+  newPassword: z
+    .string({
+      required_error: "New password is required",
+      invalid_type_error: "New password must be string",
+    })
+    .min(6, { message: "Must be 6 or more characters long" }),
+});
+
 const otpSchema = z.object({
   ...userCore,
 });
@@ -72,6 +87,12 @@ const findVoucherSchema = z.object({
   name: z.string(),
 });
 
+const editUserSchema = z.object({
+  name: z.string().optional(),
+  email: z.string().optional(),
+  mobile: z.string().optional(),
+});
+
 export type CreateVoucherInput = z.infer<typeof createVoucherSchema>;
 export type UpdateVoucherInput = z.infer<typeof updateVoucherSchema>;
 export type FindVoucherInput = z.infer<typeof findVoucherSchema>;
@@ -81,6 +102,8 @@ export type ResetPassReqInput = z.infer<typeof resetPassReqSchema>;
 export type ResetPassInput = z.infer<typeof resetPassSchema>;
 export type OtpInput = z.infer<typeof otpSchema>;
 export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
+export type EditUserInput = z.infer<typeof editUserSchema>;
+export type ChangePassInput = z.infer<typeof changePassSchema>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createUserSchema,
@@ -92,4 +115,6 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createVoucherSchema,
   updateVoucherSchema,
   findVoucherSchema,
+  editUserSchema,
+  changePassSchema,
 });
