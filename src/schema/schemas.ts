@@ -90,7 +90,7 @@ const findVoucherSchema = z.object({
 const editUserSchema = z.object({
   name: z.string().optional(),
   email: z.string().optional(),
-  mobile: z.string().optional(),
+  phone: z.string().optional(),
 });
 
 export type CreateVoucherInput = z.infer<typeof createVoucherSchema>;

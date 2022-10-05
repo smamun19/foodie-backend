@@ -14,23 +14,23 @@ export const myinfo = async (req: FastifyRequest, res: FastifyReply) => {
 };
 
 export const userInfo = async (req: FastifyRequest, res: FastifyReply) => {
-  const { email, mobile, name } = await prisma.user.findUnique({
+  const { email, phone, name } = await prisma.user.findUnique({
     where: { id: req.user.id },
     rejectOnNotFound: () => new KnownError(404, "User not found"),
   });
-  return resHandler(res, 200, "Success", { email, mobile, name });
+  return resHandler(res, 200, "Success", { email, phone, name });
 };
 
 export const editInfo = async (
   req: FastifyRequest<{ Body: EditUserInput }>,
   res: FastifyReply
 ) => {
-  const { email, mobile, name } = req.body;
-  await prisma.user.update({
+  console.log(req.body);
+  const { email, phone, name, updatedAt } = await prisma.user.update({
     where: { id: req.user.id },
-    data: { name, email, mobile },
+    data: req.body,
   });
-  return resHandler(res, 200, "Success");
+  return resHandler(res, 200, "Success", { email, phone, name, updatedAt });
 };
 
 export const changePassword = async (

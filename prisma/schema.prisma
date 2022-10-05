@@ -25,7 +25,7 @@ model User {
   updatedAt  DateTime     @updatedAt
   email      String       @unique
   name       String
-  mobile     String?
+  phone      String?
   roles      Role[]
   password   String
   orders     Order[]

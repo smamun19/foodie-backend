@@ -44,7 +44,7 @@ export const signin = async (
 ) => {
   const { email: identity, password: pass } = req.body;
 
-  const { createdAt, email, id, name, password, roles, updatedAt } =
+  const { createdAt, email, id, name, password, roles, updatedAt, phone } =
     await prisma.user.findUnique({
       where: { email: identity },
       rejectOnNotFound: () => new KnownError(404, "User not found"),
@@ -57,11 +57,20 @@ export const signin = async (
   }
 
   const token = await req.jwt.sign(
-    { id, name, email, roles, createdAt, updatedAt },
+    { id, name, email, phone, roles, createdAt, updatedAt },
     { expiresIn: "30d" }
   );
 
-  return resHandler(res, 200, "Success", { token, name });
+  return resHandler(res, 200, "Success", {
+    token,
+    id,
+    name,
+    email,
+    phone,
+    roles,
+    createdAt,
+    updatedAt,
+  });
 };
 
 export const resetPassReq = async (
