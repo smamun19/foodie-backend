@@ -1,11 +1,14 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import prisma from "../../db/prisma";
-import { KnownError, resHandler } from "../../utils/response";
+import { KnownError, rejectOnNotFound, resHandler } from "../../utils/response";
 import { comparePassword, hashPassword } from "../../utils/password";
 import {
   ChangePassInput,
   EditUserInput,
   FindVoucherInput,
+  AddAddressInput,
+  EditAddressInput,
+  RemoveAddressInput,
 } from "../../schema/schemas";
 
 export const myinfo = async (req: FastifyRequest, res: FastifyReply) => {
@@ -65,4 +68,72 @@ export const addVoucher = async (
       new KnownError(404, "Voucher not found. Please try again"),
   });
   return resHandler(res, 200, "Success", { ...result });
+};
+
+export const addAddress = async (
+  req: FastifyRequest<{ Body: AddAddressInput }>,
+  res: FastifyReply
+) => {
+  await prisma.user.update({
+    where: { id: req.user.id },
+    data: { addresses: { create: req.body } },
+  });
+  return resHandler(res, 201, "Success");
+};
+
+export const editAddress = async (
+  req: FastifyRequest<{ Body: EditAddressInput }>,
+  res: FastifyReply
+) => {
+  const {
+    name,
+    id,
+    lat,
+    long,
+    deliveryInstructions,
+    details,
+    extDetails,
+    label,
+  } = req.body;
+  await prisma.user.update({
+    where: { id: req.user.id },
+    data: {
+      addresses: {
+        update: {
+          where: { id },
+          data: {
+            name,
+            lat,
+            long,
+            deliveryInstructions,
+            details,
+            extDetails,
+            label,
+          },
+        },
+      },
+    },
+  });
+  return resHandler(res, 200, "Success");
+};
+
+export const getAddresses = async (req: FastifyRequest, res: FastifyReply) => {
+  const { addresses } = await prisma.user.findUnique({
+    where: { id: req.user.id },
+    include: { addresses: true },
+    rejectOnNotFound: rejectOnNotFound(),
+  });
+  return resHandler(res, 200, "Success", addresses);
+};
+
+export const removeAddress = async (
+  req: FastifyRequest<{ Body: RemoveAddressInput }>,
+  res: FastifyReply
+) => {
+  const { addresses } = await prisma.user.update({
+    where: { id: req.user.id },
+    include: { addresses: true },
+    data: { addresses: { delete: { id: req.body.id } } },
+  });
+  return resHandler(res, 200, "Success", addresses);
 };

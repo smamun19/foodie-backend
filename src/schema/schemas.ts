@@ -93,6 +93,31 @@ const editUserSchema = z.object({
   phone: z.string().optional(),
 });
 
+const addAddressSchema = z.object({
+  name: z.string(),
+  details: z.string(),
+  extDetails: z.string().optional(),
+  label: z.string().optional(),
+  deliveryInstructions: z.string().optional(),
+  lat: z.number(),
+  long: z.number(),
+});
+
+const editAddressSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  details: z.string().optional(),
+  extDetails: z.string().optional(),
+  deliveryInstructions: z.string().optional(),
+  label: z.string().optional(),
+  lat: z.number(),
+  long: z.number(),
+});
+
+const removeAddressSchema = z.object({
+  id: z.number(),
+});
+
 export type CreateVoucherInput = z.infer<typeof createVoucherSchema>;
 export type UpdateVoucherInput = z.infer<typeof updateVoucherSchema>;
 export type FindVoucherInput = z.infer<typeof findVoucherSchema>;
@@ -104,6 +129,9 @@ export type OtpInput = z.infer<typeof otpSchema>;
 export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
 export type EditUserInput = z.infer<typeof editUserSchema>;
 export type ChangePassInput = z.infer<typeof changePassSchema>;
+export type AddAddressInput = z.infer<typeof addAddressSchema>;
+export type EditAddressInput = z.infer<typeof editAddressSchema>;
+export type RemoveAddressInput = z.infer<typeof removeAddressSchema>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createUserSchema,
@@ -117,4 +145,7 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   findVoucherSchema,
   editUserSchema,
   changePassSchema,
+  addAddressSchema,
+  editAddressSchema,
+  removeAddressSchema,
 });

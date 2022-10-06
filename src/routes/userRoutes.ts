@@ -7,6 +7,10 @@ import {
   changePassword,
   editInfo,
   userInfo,
+  addAddress,
+  editAddress,
+  getAddresses,
+  removeAddress,
 } from "../controller/user/userController";
 
 const userRoutes = async (router: FastifyInstance) => {
@@ -67,6 +71,53 @@ const userRoutes = async (router: FastifyInstance) => {
       preValidation: [router.auth],
     },
     addVoucher
+  );
+
+  router.post(
+    "/add-address",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("addAddressSchema"),
+      },
+      preValidation: [router.auth],
+    },
+    addAddress
+  );
+
+  router.post(
+    "/edit-address",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("editAddressSchema"),
+      },
+      preValidation: [router.auth],
+    },
+    editAddress
+  );
+
+  router.post(
+    "/remove-address",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("removeAddressSchema"),
+      },
+      preValidation: [router.auth],
+    },
+    removeAddress
+  );
+
+  router.get(
+    "/myaddresses",
+    {
+      schema: {
+        ...SchemaOpts,
+      },
+      preValidation: [router.auth],
+    },
+    getAddresses
   );
 };
 

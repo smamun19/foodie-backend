@@ -21,3 +21,8 @@ export const resHandler = (
 ) => {
   return res.status(statusCode).send({ message, statusCode, details });
 };
+
+export const rejectOnNotFound =
+  (message: string = "Not found!") =>
+  () =>
+    new KnownError(404, message);
