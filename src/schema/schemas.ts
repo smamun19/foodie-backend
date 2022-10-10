@@ -118,6 +118,11 @@ const removeAddressSchema = z.object({
   id: z.number(),
 });
 
+const getGeoAddressSchema = z.object({
+  lat: z.number(),
+  lon: z.number(),
+});
+
 export type CreateVoucherInput = z.infer<typeof createVoucherSchema>;
 export type UpdateVoucherInput = z.infer<typeof updateVoucherSchema>;
 export type FindVoucherInput = z.infer<typeof findVoucherSchema>;
@@ -132,6 +137,7 @@ export type ChangePassInput = z.infer<typeof changePassSchema>;
 export type AddAddressInput = z.infer<typeof addAddressSchema>;
 export type EditAddressInput = z.infer<typeof editAddressSchema>;
 export type RemoveAddressInput = z.infer<typeof removeAddressSchema>;
+export type getGeoAddressInput = z.infer<typeof getGeoAddressSchema>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createUserSchema,
@@ -148,4 +154,5 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   addAddressSchema,
   editAddressSchema,
   removeAddressSchema,
+  getGeoAddressSchema,
 });

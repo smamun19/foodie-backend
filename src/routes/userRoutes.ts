@@ -11,6 +11,7 @@ import {
   editAddress,
   getAddresses,
   removeAddress,
+  geoAddress,
 } from "../controller/user/userController";
 
 const userRoutes = async (router: FastifyInstance) => {
@@ -107,6 +108,18 @@ const userRoutes = async (router: FastifyInstance) => {
       preValidation: [router.auth],
     },
     removeAddress
+  );
+
+  router.post(
+    "/get-geo-address",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("getGeoAddressSchema"),
+      },
+      preValidation: [router.auth],
+    },
+    geoAddress
   );
 
   router.get(
