@@ -14,8 +14,8 @@ import {
   geoAddress,
 } from "../controller/user/userController";
 
+const SchemaOpts = { tags: ["User"], security: [{ jwt: [] }] };
 const userRoutes = async (router: FastifyInstance) => {
-  const SchemaOpts = { tags: ["User"], security: [{ jwt: [] }] };
   router.get(
     "/myinfo",
     {

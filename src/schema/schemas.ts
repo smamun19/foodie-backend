@@ -148,6 +148,10 @@ const editHelpCenterQuerySchema = z.object({
   isActive: z.boolean().optional(),
 });
 
+const getHelpCenterQuerySchema = z.object({
+  id: z.number(),
+});
+
 export type CreateVoucherInput = z.infer<typeof createVoucherSchema>;
 export type UpdateVoucherInput = z.infer<typeof updateVoucherSchema>;
 export type FindVoucherInput = z.infer<typeof findVoucherSchema>;
@@ -169,6 +173,7 @@ export type EditHelpCenterInput = z.infer<typeof editHelpCenterSchema>;
 export type EditHelpCenterQueryInput = z.infer<
   typeof editHelpCenterQuerySchema
 >;
+export type GetHelpCenterQueryInput = z.infer<typeof getHelpCenterQuerySchema>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createUserSchema,
@@ -190,4 +195,5 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   editHelpCenterSchema,
   addHelpCenterQuerySchema,
   editHelpCenterQuerySchema,
+  getHelpCenterQuerySchema,
 });

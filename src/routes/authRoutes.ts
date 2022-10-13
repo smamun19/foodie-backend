@@ -11,8 +11,9 @@ import {
 
 import { $ref } from "../schema/schemas";
 
+const SchemaOpts = { tags: ["Auth"] };
+
 const authRoutes = async (router: FastifyInstance) => {
-  const SchemaOpts = { tags: ["Auth"] };
   router.post(
     "/signup",
     {

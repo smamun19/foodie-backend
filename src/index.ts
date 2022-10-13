@@ -11,6 +11,7 @@ import { defaultErrorHandler } from "./utils/errorHandler";
 import { notFoundHandler } from "./utils/notFoundHandler";
 import { jwtDecorate } from "./utils/auth";
 import { swaggerObj } from "./utils/swagger";
+import publicRoutes from "./routes/publicRoutes";
 
 const app = fastify({ logger: false });
 
@@ -31,6 +32,7 @@ for (const schema of [...userSchemas]) {
 app.register(fastifySwagger, swaggerObj);
 
 app.register(authRoutes, { prefix: "/api/auth" });
+app.register(publicRoutes, { prefix: "/api/public" });
 app.register(userRoutes, { prefix: "/api/user" });
 app.register(adminRoutes, { prefix: "/api/admin" });
 app.register(productsRoutes, { prefix: "/api/products" });

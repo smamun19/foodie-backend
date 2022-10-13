@@ -10,9 +10,8 @@ import {
 import { $ref } from "../schema/schemas";
 
 // Admin security will be implemented later for convenience
+const SchemaOpts = { tags: ["Admin"] };
 const adminRoutes = async (router: FastifyInstance) => {
-  const SchemaOpts = { tags: ["Admin"] };
-
   router.post(
     "/voucher/add",
     {

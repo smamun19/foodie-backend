@@ -2,8 +2,8 @@ import { FastifyInstance } from "fastify";
 
 import { signin, signup } from "../controller/auth/authController";
 
+const SchemaOpts = { schema: { tags: ["Product"] } };
 const productsRoutes = async (router: FastifyInstance) => {
-  const SchemaOpts = { schema: { tags: ["Product"] } };
   router.get("/", SchemaOpts, signup);
 };
 

@@ -1,6 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import prisma from "../../db/prisma";
-import { sendEmail } from "../../utils/email";
 import { generateOtp, verifyOtp } from "../../utils/otp";
 import { comparePassword, hashPassword } from "../../utils/password";
 import { KnownError, resHandler } from "../../utils/response";
