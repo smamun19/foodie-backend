@@ -123,6 +123,31 @@ const getGeoAddressSchema = z.object({
   lon: z.number(),
 });
 
+const addHelpCenterSchema = z.object({
+  title: z.string(),
+  icon: z.string().optional(),
+});
+
+const addHelpCenterQuerySchema = z.object({
+  title: z.string(),
+  icon: z.string().optional(),
+  helpCenterId: z.number(),
+});
+
+const editHelpCenterSchema = z.object({
+  id: z.number(),
+  title: z.string().optional(),
+  icon: z.string().optional(),
+  isActive: z.boolean().optional(),
+});
+
+const editHelpCenterQuerySchema = z.object({
+  id: z.number(),
+  title: z.string().optional(),
+  icon: z.string().optional(),
+  isActive: z.boolean().optional(),
+});
+
 export type CreateVoucherInput = z.infer<typeof createVoucherSchema>;
 export type UpdateVoucherInput = z.infer<typeof updateVoucherSchema>;
 export type FindVoucherInput = z.infer<typeof findVoucherSchema>;
@@ -137,7 +162,13 @@ export type ChangePassInput = z.infer<typeof changePassSchema>;
 export type AddAddressInput = z.infer<typeof addAddressSchema>;
 export type EditAddressInput = z.infer<typeof editAddressSchema>;
 export type RemoveAddressInput = z.infer<typeof removeAddressSchema>;
-export type getGeoAddressInput = z.infer<typeof getGeoAddressSchema>;
+export type GetGeoAddressInput = z.infer<typeof getGeoAddressSchema>;
+export type AddHelpCenterInput = z.infer<typeof addHelpCenterSchema>;
+export type AddHelpCenterQueryInput = z.infer<typeof addHelpCenterQuerySchema>;
+export type EditHelpCenterInput = z.infer<typeof editHelpCenterSchema>;
+export type EditHelpCenterQueryInput = z.infer<
+  typeof editHelpCenterQuerySchema
+>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createUserSchema,
@@ -155,4 +186,8 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   editAddressSchema,
   removeAddressSchema,
   getGeoAddressSchema,
+  addHelpCenterSchema,
+  editHelpCenterSchema,
+  addHelpCenterQuerySchema,
+  editHelpCenterQuerySchema,
 });

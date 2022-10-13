@@ -9,7 +9,7 @@ import {
   AddAddressInput,
   EditAddressInput,
   RemoveAddressInput,
-  getGeoAddressInput,
+  GetGeoAddressInput,
 } from "../../schema/schemas";
 import { getGeoAddress } from "../../utils/geocoder";
 
@@ -141,7 +141,7 @@ export const removeAddress = async (
 };
 
 export const geoAddress = async (
-  req: FastifyRequest<{ Body: getGeoAddressInput }>,
+  req: FastifyRequest<{ Body: GetGeoAddressInput }>,
   res: FastifyReply
 ) => {
   const { lat, lon } = req.body;

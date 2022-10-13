@@ -151,8 +151,9 @@ model HelpCenter {
   id        Int               @id @default(autoincrement())
   title     String
   icon      String?
-  User      User              @relation(fields: [userId], references: [id])
-  userId    String
+  isActive  Boolean           @default(true)
+  User      User?             @relation(fields: [userId], references: [id])
+  userId    String?
   query     HelpCenterQuery[]
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
@@ -162,6 +163,7 @@ model HelpCenterQuery {
   id           Int        @id @default(autoincrement())
   title        String
   icon         String?
+  isActive     Boolean    @default(true)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   HelpCenter   HelpCenter @relation(fields: [helpCenterId], references: [id])
