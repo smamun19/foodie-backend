@@ -12,11 +12,11 @@ export const getHelpCenter = async (req: FastifyRequest, res: FastifyReply) => {
 };
 
 export const getHelpCenterQuery = async (
-  req: FastifyRequest<{ Body: GetHelpCenterQueryInput }>,
+  req: FastifyRequest<{ Querystring: GetHelpCenterQueryInput }>,
   res: FastifyReply
 ) => {
   const result = await prisma.helpCenter.findFirst({
-    where: { id: req.body.id, isActive: true },
+    where: { id: req.query.id, isActive: true },
     rejectOnNotFound: rejectOnNotFound(),
     include: { query: true },
   });

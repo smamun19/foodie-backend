@@ -17,12 +17,12 @@ const publicRoutes = async (router: FastifyInstance) => {
     getHelpCenter
   );
 
-  router.post(
+  router.get(
     "/help-center-query",
     {
       schema: {
         ...SchemaOpts,
-        body: $ref("getHelpCenterQuerySchema"),
+        querystring: $ref("getHelpCenterQuerySchema"),
       },
     },
     getHelpCenterQuery
