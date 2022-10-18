@@ -43,11 +43,21 @@ export const signin = async (
 ) => {
   const { email: identity, password: pass } = req.body;
 
-  const { createdAt, email, id, name, password, roles, updatedAt, phone } =
-    await prisma.user.findUnique({
-      where: { email: identity },
-      rejectOnNotFound: () => new KnownError(404, "User not found"),
-    });
+  const {
+    createdAt,
+    email,
+    id,
+    name,
+    password,
+    roles,
+    updatedAt,
+    phone,
+    addresses,
+  } = await prisma.user.findUnique({
+    where: { email: identity },
+    include: { addresses: { orderBy: { updatedAt: "desc" } } },
+    rejectOnNotFound: () => new KnownError(404, "User not found"),
+  });
 
   const result = await comparePassword(pass, password);
 
@@ -67,6 +77,7 @@ export const signin = async (
     email,
     phone,
     roles,
+    address: addresses,
     createdAt,
     updatedAt,
   });

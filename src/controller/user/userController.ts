@@ -76,11 +76,12 @@ export const addAddress = async (
   req: FastifyRequest<{ Body: AddAddressInput }>,
   res: FastifyReply
 ) => {
-  await prisma.user.update({
+  const { addresses } = await prisma.user.update({
     where: { id: req.user.id },
+    include: { addresses: { orderBy: { updatedAt: "desc" } } },
     data: { addresses: { create: req.body } },
   });
-  return resHandler(res, 201, "Success");
+  return resHandler(res, 201, "Success", addresses);
 };
 
 export const editAddress = async (
@@ -97,8 +98,9 @@ export const editAddress = async (
     extDetails,
     label,
   } = req.body;
-  await prisma.user.update({
+  const { addresses } = await prisma.user.update({
     where: { id: req.user.id },
+    include: { addresses: { orderBy: { updatedAt: "desc" } } },
     data: {
       addresses: {
         update: {
@@ -116,7 +118,7 @@ export const editAddress = async (
       },
     },
   });
-  return resHandler(res, 200, "Success");
+  return resHandler(res, 200, "Success", addresses);
 };
 
 export const getAddresses = async (req: FastifyRequest, res: FastifyReply) => {
