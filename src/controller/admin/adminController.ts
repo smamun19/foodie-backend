@@ -20,7 +20,7 @@ export const addVoucher = async (
   await prisma.voucher.create({
     data: { details, isActive, name: name?.toUpperCase(), value },
   });
-  resHandler(res, 200, "Success");
+  resHandler(res, 201, "Success");
 };
 
 export const editVoucher = async (
@@ -98,5 +98,5 @@ export const editRestaurant = async (
     where: { id: req.body.id },
     data: req.body,
   });
-  resHandler(res, 201, "Success", result);
+  resHandler(res, 200, "Success", result);
 };

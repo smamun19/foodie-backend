@@ -1,12 +1,26 @@
 import { FastifyRegisterOptions } from "fastify";
-import { SwaggerOptions } from "fastify-swagger";
+import { SwaggerOptions } from "@fastify/swagger";
 import { version } from "../../package.json";
 const port = parseInt(process.env.PORT ?? "8080", 10);
 export const swaggerObj: FastifyRegisterOptions<SwaggerOptions> | undefined = {
-  routePrefix: "/api/doc",
   prefix: "/api",
-  exposeRoute: true,
-  staticCSP: true,
+  mode: "dynamic",
+
+  swagger: {
+    info: {
+      title: "Test swagger",
+      description: "Testing the Fastify swagger API",
+      version: "0.1.0",
+    },
+    externalDocs: {
+      url: "https://swagger.io",
+      description: "Find more info here",
+    },
+    host: "localhost",
+    schemes: ["http"],
+    consumes: ["application/json"],
+    produces: ["application/json"],
+  },
 
   openapi: {
     components: {

@@ -1,7 +1,8 @@
 import fastify from "fastify";
-import fastifySwagger from "fastify-swagger";
+import fastifySwagger from "@fastify/swagger";
 import authRoutes from "./routes/authRoutes";
-import fastifyJwt from "fastify-jwt";
+import fastifyJwt from "@fastify/jwt";
+import fastifySwaggerUi from "@fastify/swagger-ui";
 import productsRoutes from "./routes/porductRoutes";
 import userRoutes from "./routes/userRoutes";
 import adminRoutes from "./routes/adminRoutes";
@@ -13,7 +14,7 @@ import { jwtDecorate } from "./utils/auth";
 import { swaggerObj } from "./utils/swagger";
 import publicRoutes from "./routes/publicRoutes";
 
-const app = fastify({ logger: false });
+const app = fastify({ logger: true });
 
 const port = parseInt(process.env.PORT ?? "8080", 10);
 
@@ -30,6 +31,23 @@ for (const schema of [...userSchemas]) {
   app.addSchema(schema);
 }
 app.register(fastifySwagger, swaggerObj);
+app.register(fastifySwaggerUi, {
+  routePrefix: "/api/doc",
+  initOAuth: {},
+  uiConfig: {
+    deepLinking: false,
+  },
+  uiHooks: {
+    onRequest: function (request, reply, next) {
+      next();
+    },
+    preHandler: function (request, reply, next) {
+      next();
+    },
+  },
+  staticCSP: true,
+  transformStaticCSP: (header) => header,
+});
 
 app.register(authRoutes, { prefix: "/api/auth" });
 app.register(publicRoutes, { prefix: "/api/public" });
@@ -41,7 +59,7 @@ app.setErrorHandler(defaultErrorHandler);
 
 const start = (async () => {
   try {
-    await app.listen(port, "::");
+    await app.listen({ port, ipv6Only: false });
     console.log(`Server running at http://localhost:${port}`);
     console.log(`Swagger doc at at http://localhost:${port}/api/doc`);
   } catch (error) {
