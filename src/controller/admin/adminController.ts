@@ -8,6 +8,8 @@ import {
   AddHelpCenterQueryInput,
   EditHelpCenterInput,
   EditHelpCenterQueryInput,
+  AddRestaurantInput,
+  EditRestaurantInput,
 } from "../../schema/schemas";
 
 export const addVoucher = async (
@@ -76,4 +78,25 @@ export const editHelpCenterQuery = async (
     data: { title, icon, isActive },
   });
   resHandler(res, 200, "Success", result);
+};
+
+export const addRestaurant = async (
+  req: FastifyRequest<{ Body: AddRestaurantInput }>,
+  res: FastifyReply
+) => {
+  const result = await prisma.restaurant.create({
+    data: req.body,
+  });
+  resHandler(res, 201, "Success", result);
+};
+
+export const editRestaurant = async (
+  req: FastifyRequest<{ Body: EditRestaurantInput }>,
+  res: FastifyReply
+) => {
+  const result = await prisma.restaurant.update({
+    where: { id: req.body.id },
+    data: req.body,
+  });
+  resHandler(res, 201, "Success", result);
 };

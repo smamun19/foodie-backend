@@ -152,6 +152,20 @@ const getHelpCenterQuerySchema = z.object({
   id: z.number(),
 });
 
+const addRestaurantSchema = z.object({
+  title: z.string(),
+  details: z.string().optional(),
+  openingFrom: z.number(),
+  openingTo: z.number(),
+});
+const editRestaurantSchema = z.object({
+  id: z.string(),
+  title: z.string().optional(),
+  details: z.string().optional().optional(),
+  openingFrom: z.number().optional(),
+  openingTo: z.number().optional(),
+});
+
 export type CreateVoucherInput = z.infer<typeof createVoucherSchema>;
 export type UpdateVoucherInput = z.infer<typeof updateVoucherSchema>;
 export type FindVoucherInput = z.infer<typeof findVoucherSchema>;
@@ -174,6 +188,8 @@ export type EditHelpCenterQueryInput = z.infer<
   typeof editHelpCenterQuerySchema
 >;
 export type GetHelpCenterQueryInput = z.infer<typeof getHelpCenterQuerySchema>;
+export type AddRestaurantInput = z.infer<typeof addRestaurantSchema>;
+export type EditRestaurantInput = z.infer<typeof editRestaurantSchema>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createUserSchema,
@@ -196,4 +212,6 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   addHelpCenterQuerySchema,
   editHelpCenterQuerySchema,
   getHelpCenterQuerySchema,
+  addRestaurantSchema,
+  editRestaurantSchema,
 });

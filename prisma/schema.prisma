@@ -77,7 +77,6 @@ model Restaurant {
   User         User?       @relation(fields: [userId], references: [id])
   userId       String?
   orders       Order[]
-  locationId   Int?
 }
 
 model Item {

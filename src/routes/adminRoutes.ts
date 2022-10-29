@@ -2,9 +2,11 @@ import { FastifyInstance } from "fastify";
 import {
   addHelpCenter,
   addHelpCenterQuery,
+  addRestaurant,
   addVoucher,
   editHelpCenter,
   editHelpCenterQuery,
+  editRestaurant,
   editVoucher,
 } from "../controller/admin/adminController";
 import { $ref } from "../schema/schemas";
@@ -65,6 +67,28 @@ const adminRoutes = async (router: FastifyInstance) => {
       },
     },
     addHelpCenterQuery
+  );
+
+  router.post(
+    "/restaurant/add",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("addRestaurantSchema"),
+      },
+    },
+    addRestaurant
+  );
+
+  router.post(
+    "/restaurant/edit",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("editRestaurantSchema"),
+      },
+    },
+    editRestaurant
   );
 
   router.post(
