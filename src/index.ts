@@ -1,17 +1,18 @@
 import fastify from "fastify";
 import fastifySwagger from "@fastify/swagger";
-import authRoutes from "./routes/authRoutes";
 import fastifyJwt from "@fastify/jwt";
 import fastifySwaggerUi from "@fastify/swagger-ui";
+import fastifyMultipart from "@fastify/multipart";
+
 import productsRoutes from "./routes/porductRoutes";
 import userRoutes from "./routes/userRoutes";
 import adminRoutes from "./routes/adminRoutes";
+import authRoutes from "./routes/authRoutes";
 import { userSchemas } from "./schema/schemas";
-
 import { defaultErrorHandler } from "./utils/errorHandler";
 import { notFoundHandler } from "./utils/notFoundHandler";
 import { jwtDecorate } from "./utils/auth";
-import { swaggerObj } from "./utils/swagger";
+import { swaggerObj, swaggerUiObject } from "./utils/swagger";
 import publicRoutes from "./routes/publicRoutes";
 
 const app = fastify({ logger: true });
@@ -21,6 +22,7 @@ const port = parseInt(process.env.PORT ?? "8080", 10);
 app.register(fastifyJwt, {
   secret: process.env.JWT_SECRET ?? "ohno!",
 });
+app.register(fastifyMultipart);
 app.decorate("auth", jwtDecorate);
 app.addHook("preValidation", (req, res, done) => {
   req.jwt = app.jwt;
@@ -31,23 +33,7 @@ for (const schema of [...userSchemas]) {
   app.addSchema(schema);
 }
 app.register(fastifySwagger, swaggerObj);
-app.register(fastifySwaggerUi, {
-  routePrefix: "/api/doc",
-  initOAuth: {},
-  uiConfig: {
-    deepLinking: false,
-  },
-  uiHooks: {
-    onRequest: function (request, reply, next) {
-      next();
-    },
-    preHandler: function (request, reply, next) {
-      next();
-    },
-  },
-  staticCSP: true,
-  transformStaticCSP: (header) => header,
-});
+app.register(fastifySwaggerUi, swaggerUiObject);
 
 app.register(authRoutes, { prefix: "/api/auth" });
 app.register(publicRoutes, { prefix: "/api/public" });
