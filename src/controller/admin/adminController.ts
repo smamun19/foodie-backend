@@ -1,6 +1,11 @@
 import { FastifyRequest, FastifyReply } from "fastify";
+import fs from "fs";
+import { promisify } from "util";
+import { pipeline } from "stream";
+const pump = promisify(pipeline);
 import prisma from "../../db/prisma";
 import { KnownError, resHandler } from "../../utils/response";
+
 import {
   CreateVoucherInput,
   UpdateVoucherInput,
@@ -11,6 +16,8 @@ import {
   AddRestaurantInput,
   EditRestaurantInput,
 } from "../../schema/schemas";
+import { Multipart, MultipartFile, MultipartValue } from "@fastify/multipart";
+import path from "path";
 
 export const addVoucher = async (
   req: FastifyRequest<{ Body: CreateVoucherInput }>,
@@ -99,4 +106,18 @@ export const editRestaurant = async (
     data: req.body,
   });
   resHandler(res, 200, "Success", result);
+};
+
+export const upload = async (req: FastifyRequest, res: FastifyReply) => {
+  const data: MultipartFile | undefined = await req.file();
+
+  if (data) {
+    console.log("--decodedJsonObject-->", data.fields["id"].value);
+    const result = await pump(
+      data.file,
+      fs.createWriteStream(path.join("src", "static", `${data?.filename}`))
+    );
+  }
+
+  resHandler(res, 200, "Success");
 };

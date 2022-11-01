@@ -8,6 +8,7 @@ import {
   editHelpCenterQuery,
   editRestaurant,
   editVoucher,
+  upload,
 } from "../controller/admin/adminController";
 import { $ref } from "../schema/schemas";
 
@@ -89,6 +90,34 @@ const adminRoutes = async (router: FastifyInstance) => {
       },
     },
     editRestaurant
+  );
+
+  router.post(
+    "/restaurant/upload",
+    {
+      schema: {
+        ...SchemaOpts,
+        consumes: ["multipart/form-data"],
+
+        // body: {
+        //   type: "object",
+        //   properties: {
+        //     id: {
+        //       type: "string",
+        //     },
+        //     fieldname: { type: "string" },
+        //     encoding: { type: "string" },
+        //     filename: { type: "string" },
+        //     mimetype: { type: "string" },
+        //     file: {
+        //       type: "string",
+        //       format: "binary",
+        //     },
+        //   },
+        // },
+      },
+    },
+    upload
   );
 
   router.post(
