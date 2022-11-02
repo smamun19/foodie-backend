@@ -14,6 +14,7 @@ import { notFoundHandler } from "./utils/notFoundHandler";
 import { jwtDecorate } from "./utils/auth";
 import { swaggerObj, swaggerUiObject } from "./utils/swagger";
 import publicRoutes from "./routes/publicRoutes";
+import { onFile } from "./utils/fileUpload";
 
 const app = fastify({ logger: false });
 
@@ -22,7 +23,7 @@ const port = parseInt(process.env.PORT ?? "8080", 10);
 app.register(fastifyJwt, {
   secret: process.env.JWT_SECRET ?? "ohno!",
 });
-app.register(fastifyMultipart, {});
+app.register(fastifyMultipart, { attachFieldsToBody: "keyValues", onFile });
 app.decorate("auth", jwtDecorate);
 app.addHook("preValidation", (req, res, done) => {
   req.jwt = app.jwt;

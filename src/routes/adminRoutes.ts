@@ -95,26 +95,31 @@ const adminRoutes = async (router: FastifyInstance) => {
   router.post(
     "/restaurant/upload",
     {
+      preValidation: async (request, reply, done) => {
+        const data = await request.file();
+        console.log(data);
+        request.body = { ...request.body, filename: "randomString" };
+      },
       schema: {
         ...SchemaOpts,
         consumes: ["multipart/form-data"],
 
-        // body: {
-        //   type: "object",
-        //   properties: {
-        //     id: {
-        //       type: "string",
-        //     },
-        //     fieldname: { type: "string" },
-        //     encoding: { type: "string" },
-        //     filename: { type: "string" },
-        //     mimetype: { type: "string" },
-        //     file: {
-        //       type: "string",
-        //       format: "binary",
-        //     },
-        //   },
-        // },
+        body: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+            },
+            fieldname: { type: "string" },
+            encoding: { type: "string" },
+            filename: { type: "string" },
+            mimetype: { type: "string" },
+            file: {
+              type: "string",
+              format: "binary",
+            },
+          },
+        },
       },
     },
     upload

@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import fs from "fs";
+import fs, { writeFile } from "fs";
 import { promisify } from "util";
-import { pipeline } from "stream";
+import { pipeline, Readable } from "stream";
 const pump = promisify(pipeline);
 import prisma from "../../db/prisma";
 import { KnownError, resHandler } from "../../utils/response";
@@ -109,15 +109,26 @@ export const editRestaurant = async (
 };
 
 export const upload = async (req: FastifyRequest, res: FastifyReply) => {
-  const data: MultipartFile | undefined = await req.file();
+  // const data: MultipartFile | undefined = await req.file();
 
-  if (data) {
-    console.log("--decodedJsonObject-->", data.fields["id"].value);
-    const result = await pump(
-      data.file,
-      fs.createWriteStream(path.join("src", "static", `${data?.filename}`))
-    );
-  }
+  // if (data) {
+  //   console.log("--decodedJsonObject-->", data.fields["id"]?.value);
+  //   await pump(
+  //     data.file,
+  //     fs.createWriteStream(path.join("src", "static", `${data.filename}`))
+  //   );
+  // }
+
+  //console.log(req.body.filename);
+
+  const decodedFile = Buffer.from(req.body?.file, "base64");
+
+  const stream = Readable.from(decodedFile);
+
+  await pump(
+    stream,
+    fs.createWriteStream(path.join("src", "static", "name.jpg"))
+  );
 
   resHandler(res, 200, "Success");
 };
