@@ -166,6 +166,11 @@ const editRestaurantSchema = z.object({
   openingTo: z.number().optional(),
 });
 
+const uploadPhotoSchema = z.object({
+  id: z.string(),
+  file: z.string(),
+});
+
 export type CreateVoucherInput = z.infer<typeof createVoucherSchema>;
 export type UpdateVoucherInput = z.infer<typeof updateVoucherSchema>;
 export type FindVoucherInput = z.infer<typeof findVoucherSchema>;
@@ -189,6 +194,7 @@ export type EditHelpCenterQueryInput = z.infer<
 >;
 export type GetHelpCenterQueryInput = z.infer<typeof getHelpCenterQuerySchema>;
 export type AddRestaurantInput = z.infer<typeof addRestaurantSchema>;
+export type UploadPhotoType = z.infer<typeof uploadPhotoSchema>;
 export type EditRestaurantInput = z.infer<typeof editRestaurantSchema>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({

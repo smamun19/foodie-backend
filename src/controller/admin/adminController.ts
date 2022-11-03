@@ -15,6 +15,7 @@ import {
   EditHelpCenterQueryInput,
   AddRestaurantInput,
   EditRestaurantInput,
+  UploadPhotoType,
 } from "../../schema/schemas";
 import { Multipart, MultipartFile, MultipartValue } from "@fastify/multipart";
 import path from "path";
@@ -125,12 +126,14 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
 
   // WITH SWAGGER
 
-  const decodedFile = Buffer.from(req.body?.file, "base64");
+  // @ts-ignore
+  const decodedFile = Buffer.from(req.body.file, "base64");
 
   const stream = Readable.from(decodedFile);
 
   await pump(
     stream,
+    // @ts-ignore
     fs.createWriteStream(path.join("src", "static", `${req.body.filename}`))
   );
 

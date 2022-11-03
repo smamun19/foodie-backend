@@ -1,13 +1,12 @@
-import fs from "fs";
-import path from "path";
-import { promisify } from "util";
-import { pipeline, Readable } from "stream";
-const pump = promisify(pipeline);
+import { MultipartFile } from "@fastify/multipart";
 
-export const onFile = async (part) => {
+export const onFile = async (part: MultipartFile) => {
   const { filename, mimetype, encoding } = part;
   const buff = await part.toBuffer();
 
-  const decoded = Buffer.from(buff, "base64").toString("base64");
+  const decoded = Buffer.from(buff.toString("base64"), "base64").toString(
+    "base64"
+  );
+  // @ts-ignore
   part.value = { filename, mimetype, encoding, decoded };
 };
