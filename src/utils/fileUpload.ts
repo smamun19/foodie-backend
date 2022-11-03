@@ -5,10 +5,9 @@ import { pipeline, Readable } from "stream";
 const pump = promisify(pipeline);
 
 export const onFile = async (part) => {
+  const { filename, mimetype, encoding } = part;
   const buff = await part.toBuffer();
 
   const decoded = Buffer.from(buff, "base64").toString("base64");
-  part.value = decoded;
-
-  // await pump(stream, fs.createWriteStream(path.join("static.jpg")));
+  part.value = { filename, mimetype, encoding, decoded };
 };

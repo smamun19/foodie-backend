@@ -11,6 +11,7 @@ import {
   upload,
 } from "../controller/admin/adminController";
 import { $ref } from "../schema/schemas";
+import { uploadPreHandler } from "../utils/handler";
 
 // Admin security will be implemented later for convenience
 const SchemaOpts = { tags: ["Admin"] };
@@ -95,11 +96,7 @@ const adminRoutes = async (router: FastifyInstance) => {
   router.post(
     "/restaurant/upload",
     {
-      preValidation: async (request, reply, done) => {
-        const data = await request.file();
-        console.log(data);
-        request.body = { ...request.body, filename: "randomString" };
-      },
+      preValidation: uploadPreHandler,
       schema: {
         ...SchemaOpts,
         consumes: ["multipart/form-data"],
@@ -110,10 +107,6 @@ const adminRoutes = async (router: FastifyInstance) => {
             id: {
               type: "string",
             },
-            fieldname: { type: "string" },
-            encoding: { type: "string" },
-            filename: { type: "string" },
-            mimetype: { type: "string" },
             file: {
               type: "string",
               format: "binary",

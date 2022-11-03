@@ -109,6 +109,8 @@ export const editRestaurant = async (
 };
 
 export const upload = async (req: FastifyRequest, res: FastifyReply) => {
+  // WITHOUT SWAGGER
+
   // const data: MultipartFile | undefined = await req.file();
 
   // if (data) {
@@ -121,13 +123,15 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
 
   //console.log(req.body.filename);
 
+  // WITH SWAGGER
+
   const decodedFile = Buffer.from(req.body?.file, "base64");
 
   const stream = Readable.from(decodedFile);
 
   await pump(
     stream,
-    fs.createWriteStream(path.join("src", "static", "name.jpg"))
+    fs.createWriteStream(path.join("src", "static", `${req.body.filename}`))
   );
 
   resHandler(res, 200, "Success");
