@@ -18,6 +18,7 @@
   "dependencies": {
     "@fastify/jwt": "^6.3.2",
     "@fastify/multipart": "^7.3.0",
+    "@fastify/static": "^6.5.0",
     "@fastify/swagger": "^8.1.0",
     "@fastify/swagger-ui": "^1.1.0",
     "@prisma/client": "^3.11.1",

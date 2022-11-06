@@ -15,8 +15,16 @@ import { jwtDecorate } from "./utils/auth";
 import { swaggerObj, swaggerUiObject } from "./utils/swagger";
 import publicRoutes from "./routes/publicRoutes";
 import { onFile } from "./utils/fileUpload";
+import path from "path";
 
 const app = fastify({ logger: false });
+
+console.log(process.cwd());
+
+app.register(require("@fastify/static"), {
+  root: path.join(process.cwd(), "static"),
+  prefix: "/static/",
+});
 
 const port = parseInt(process.env.PORT ?? "8080", 10);
 

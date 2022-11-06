@@ -2,13 +2,14 @@ import { FastifyInstance } from "fastify";
 import {
   addHelpCenter,
   addHelpCenterQuery,
+  addItem,
   addRestaurant,
   addVoucher,
   editHelpCenter,
   editHelpCenterQuery,
   editRestaurant,
   editVoucher,
-  upload,
+  uploadRestaurantPhoto,
 } from "../controller/admin/adminController";
 import { $ref } from "../schema/schemas";
 import { uploadPreHandler } from "../utils/handler";
@@ -103,6 +104,7 @@ const adminRoutes = async (router: FastifyInstance) => {
 
         body: {
           type: "object",
+          required: ["id", "file"],
           properties: {
             id: {
               type: "string",
@@ -115,7 +117,7 @@ const adminRoutes = async (router: FastifyInstance) => {
         },
       },
     },
-    upload
+    uploadRestaurantPhoto
   );
 
   router.post(
@@ -127,6 +129,17 @@ const adminRoutes = async (router: FastifyInstance) => {
       },
     },
     editHelpCenterQuery
+  );
+
+  router.post(
+    "/restaurant/add-item",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("addItemSchema"),
+      },
+    },
+    addItem
   );
 };
 

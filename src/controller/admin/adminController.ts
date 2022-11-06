@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import fs, { writeFile } from "fs";
+import fs, { mkdir, writeFile } from "fs";
 import { promisify } from "util";
 import { pipeline, Readable } from "stream";
 const pump = promisify(pipeline);
@@ -16,6 +16,7 @@ import {
   AddRestaurantInput,
   EditRestaurantInput,
   UploadPhotoType,
+  AddItemInput,
 } from "../../schema/schemas";
 import { Multipart, MultipartFile, MultipartValue } from "@fastify/multipart";
 import path from "path";
@@ -95,6 +96,7 @@ export const addRestaurant = async (
   const result = await prisma.restaurant.create({
     data: req.body,
   });
+
   resHandler(res, 201, "Success", result);
 };
 
@@ -109,7 +111,10 @@ export const editRestaurant = async (
   resHandler(res, 200, "Success", result);
 };
 
-export const upload = async (req: FastifyRequest, res: FastifyReply) => {
+export const uploadRestaurantPhoto = async (
+  req: FastifyRequest,
+  res: FastifyReply
+) => {
   // WITHOUT SWAGGER
 
   // const data: MultipartFile | undefined = await req.file();
@@ -126,16 +131,79 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
 
   // WITH SWAGGER
 
+  const { photo } = await prisma.restaurant.update({
+    // @ts-ignore
+    where: { id: req.body.id },
+    data: {
+      photo: {
+        create: {
+          // @ts-ignore
+          name: req.body.filename,
+          // @ts-ignore
+
+          type: req.body.mimetype,
+          // @ts-ignore
+          path: ["restaurant", req.body.id],
+        },
+      },
+    },
+    select: { photo: true },
+  });
+
+  if (!photo) {
+    return resHandler(res, 500, "Failed");
+  }
   // @ts-ignore
   const decodedFile = Buffer.from(req.body.file, "base64");
 
   const stream = Readable.from(decodedFile);
 
-  await pump(
-    stream,
-    // @ts-ignore
-    fs.createWriteStream(path.join("src", "static", `${req.body.filename}`))
-  );
+  const cwd = process.cwd();
+  const directory = `${cwd}${photo.host}${photo.path.join("/")}`;
+  const path = `${directory}/${photo.name}`;
 
-  resHandler(res, 200, "Success");
+  await mkdir(directory, { recursive: true }, (err) => {
+    if (err) {
+      throw new KnownError(500, "Somethings wrong");
+    }
+  });
+
+  await pump(stream, fs.createWriteStream(path));
+
+  return resHandler(res, 200, "Success", { path: path.replace(cwd, "") });
+};
+
+export const addItem = async (
+  req: FastifyRequest<{ Body: AddItemInput }>,
+  res: FastifyReply
+) => {
+  const { category, id, name, price, details, variation } = req.body;
+  if (variation) {
+    const result = await prisma.restaurant.update({
+      where: { id },
+      data: {
+        item: {
+          create: {
+            name,
+            category,
+            price,
+            details,
+            variation: {
+              createMany: { data: variation },
+            },
+          },
+        },
+      },
+    });
+    return resHandler(res, 201, "Success", result);
+  }
+
+  const result = await prisma.restaurant.update({
+    where: { id },
+    data: {
+      item: { create: { name, category, details, price } },
+    },
+  });
+
+  return resHandler(res, 201, "Success", result);
 };

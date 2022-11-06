@@ -3,6 +3,8 @@ import { FastifyInstance } from "fastify";
 import {
   getHelpCenter,
   getHelpCenterQuery,
+  getItems,
+  getRestaurants,
 } from "../controller/public/publicController";
 import { $ref } from "../schema/schemas";
 const SchemaOpts = { tags: ["Public"] };
@@ -26,6 +28,27 @@ const publicRoutes = async (router: FastifyInstance) => {
       },
     },
     getHelpCenterQuery
+  );
+
+  router.get(
+    "/restaurants",
+    {
+      schema: {
+        ...SchemaOpts,
+      },
+    },
+    getRestaurants
+  );
+
+  router.get(
+    "/restaurants/items",
+    {
+      schema: {
+        ...SchemaOpts,
+        querystring: $ref("getByIdSchema"),
+      },
+    },
+    getItems
   );
 };
 

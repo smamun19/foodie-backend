@@ -154,9 +154,11 @@ const getHelpCenterQuerySchema = z.object({
 
 const addRestaurantSchema = z.object({
   title: z.string(),
+  openingFrom: z.number().optional(),
+  openingTo: z.number().optional(),
   details: z.string().optional(),
-  openingFrom: z.number(),
-  openingTo: z.number(),
+  deliveryTime: z.number().optional(),
+  type: z.string().optional(),
 });
 const editRestaurantSchema = z.object({
   id: z.string(),
@@ -164,11 +166,31 @@ const editRestaurantSchema = z.object({
   details: z.string().optional().optional(),
   openingFrom: z.number().optional(),
   openingTo: z.number().optional(),
+  deliveryTime: z.number().optional(),
+  type: z.string().optional(),
 });
 
 const uploadPhotoSchema = z.object({
   id: z.string(),
   file: z.string(),
+});
+
+const variationSchema = z.object({
+  price: z.number(),
+  name: z.string(),
+});
+
+const addItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  price: z.number(),
+  category: z.string(),
+  details: z.string().optional(),
+  variation: z.array(variationSchema).optional(),
+});
+
+const getByIdSchema = z.object({
+  id: z.string(),
 });
 
 export type CreateVoucherInput = z.infer<typeof createVoucherSchema>;
@@ -196,6 +218,8 @@ export type GetHelpCenterQueryInput = z.infer<typeof getHelpCenterQuerySchema>;
 export type AddRestaurantInput = z.infer<typeof addRestaurantSchema>;
 export type UploadPhotoType = z.infer<typeof uploadPhotoSchema>;
 export type EditRestaurantInput = z.infer<typeof editRestaurantSchema>;
+export type AddItemInput = z.infer<typeof addItemSchema>;
+export type ByIdInput = z.infer<typeof getByIdSchema>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createUserSchema,
@@ -220,4 +244,6 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   getHelpCenterQuerySchema,
   addRestaurantSchema,
   editRestaurantSchema,
+  addItemSchema,
+  getByIdSchema,
 });
