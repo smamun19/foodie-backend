@@ -41,7 +41,7 @@ const publicRoutes = async (router: FastifyInstance) => {
   );
 
   router.get(
-    "/restaurants/items",
+    "/restaurant/items",
     {
       schema: {
         ...SchemaOpts,

@@ -19,8 +19,6 @@ import path from "path";
 
 const app = fastify({ logger: false });
 
-console.log(process.cwd());
-
 app.register(require("@fastify/static"), {
   root: path.join(process.cwd(), "static"),
   prefix: "/static/",
