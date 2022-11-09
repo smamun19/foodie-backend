@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 
 import {
+  getAllRestaurants,
   getHelpCenter,
   getHelpCenterQuery,
   getItems,
@@ -38,6 +39,16 @@ const publicRoutes = async (router: FastifyInstance) => {
       },
     },
     getRestaurants
+  );
+
+  router.get(
+    "/all-restaurants",
+    {
+      schema: {
+        ...SchemaOpts,
+      },
+    },
+    getAllRestaurants
   );
 
   router.get(
