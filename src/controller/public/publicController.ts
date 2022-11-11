@@ -65,12 +65,30 @@ export const getItems = async (
   req: FastifyRequest<{ Querystring: ByIdInput }>,
   res: FastifyReply
 ) => {
-  const { item } = await prisma.restaurant.findFirst({
-    where: { id: req.query.id, isActive: true },
-
-    include: { item: true },
-    rejectOnNotFound: rejectOnNotFound(),
+  const result = await prisma.item.groupBy({
+    where: { restaurantId: req.query.id },
+    by: ["category"],
+    orderBy: { category: "asc" },
   });
 
-  resHandler(res, 200, "Success", item);
+  const data = await Promise.all(
+    result.map((e) =>
+      prisma.restaurant.findFirst({
+        where: { id: req.query.id },
+        include: {
+          item: {
+            where: { category: e.category },
+            include: { photo: true, variation: true },
+          },
+        },
+      })
+    )
+  );
+
+  const finalResult = data.map((e, i) => ({
+    title: result[i].category,
+    data: e?.item,
+  }));
+
+  resHandler(res, 200, "Success", finalResult);
 };
