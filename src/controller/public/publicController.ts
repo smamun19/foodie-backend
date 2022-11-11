@@ -61,10 +61,31 @@ export const getAllRestaurants = async (
   resHandler(res, 200, "Success", result);
 };
 
+export const getRestaurant = async (
+  req: FastifyRequest<{ Querystring: ByIdInput }>,
+  res: FastifyReply
+) => {
+  const result = await prisma.restaurant.findFirst({
+    where: { id: req.query.id, isActive: true },
+
+    include: { photo: true },
+    rejectOnNotFound: rejectOnNotFound(),
+  });
+
+  resHandler(res, 200, "Success", result);
+};
+
 export const getItems = async (
   req: FastifyRequest<{ Querystring: ByIdInput }>,
   res: FastifyReply
 ) => {
+  const restaurant = await prisma.restaurant.findFirst({
+    where: { id: req.query.id, isActive: true },
+
+    include: { photo: true },
+    rejectOnNotFound: rejectOnNotFound(),
+  });
+
   const result = await prisma.item.groupBy({
     where: { restaurantId: req.query.id },
     by: ["category"],
@@ -90,5 +111,5 @@ export const getItems = async (
     data: e?.item,
   }));
 
-  resHandler(res, 200, "Success", finalResult);
+  resHandler(res, 200, "Success", { restaurantItems: finalResult, restaurant });
 };

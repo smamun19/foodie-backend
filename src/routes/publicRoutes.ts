@@ -5,6 +5,7 @@ import {
   getHelpCenter,
   getHelpCenterQuery,
   getItems,
+  getRestaurant,
   getRestaurants,
 } from "../controller/public/publicController";
 import { $ref } from "../schema/schemas";
@@ -49,6 +50,17 @@ const publicRoutes = async (router: FastifyInstance) => {
       },
     },
     getAllRestaurants
+  );
+
+  router.get(
+    "/restaurant",
+    {
+      schema: {
+        ...SchemaOpts,
+        querystring: $ref("getByIdSchema"),
+      },
+    },
+    getRestaurant
   );
 
   router.get(
