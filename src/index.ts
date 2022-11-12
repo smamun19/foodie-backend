@@ -29,7 +29,11 @@ const port = parseInt(process.env.PORT ?? "8080", 10);
 app.register(fastifyJwt, {
   secret: process.env.JWT_SECRET ?? "ohno!",
 });
-app.register(fastifyMultipart, { attachFieldsToBody: "keyValues", onFile });
+app.register(fastifyMultipart, {
+  attachFieldsToBody: "keyValues",
+  onFile,
+  limits: { fileSize: 1024 * 1024 * 10 },
+});
 app.decorate("auth", jwtDecorate);
 app.addHook("preValidation", (req, res, done) => {
   req.jwt = app.jwt;

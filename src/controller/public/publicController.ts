@@ -1,6 +1,10 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import prisma from "../../db/prisma";
-import { ByIdInput, GetHelpCenterQueryInput } from "../../schema/schemas";
+import {
+  ByIdInput,
+  GetHelpCenterQueryInput,
+  GetItemInput,
+} from "../../schema/schemas";
 import { KnownError, rejectOnNotFound, resHandler } from "../../utils/response";
 
 export const getHelpCenter = async (req: FastifyRequest, res: FastifyReply) => {
@@ -112,4 +116,18 @@ export const getItems = async (
   }));
 
   resHandler(res, 200, "Success", { restaurantItems: finalResult, restaurant });
+};
+
+export const getItem = async (
+  req: FastifyRequest<{ Querystring: GetItemInput }>,
+  res: FastifyReply
+) => {
+  const item = await prisma.item.findFirst({
+    where: { id: req.query.id, isActive: true },
+    include: { variation: true },
+
+    rejectOnNotFound: rejectOnNotFound(),
+  });
+
+  resHandler(res, 200, "Success", item);
 };

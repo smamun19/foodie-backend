@@ -4,6 +4,7 @@ import {
   getAllRestaurants,
   getHelpCenter,
   getHelpCenterQuery,
+  getItem,
   getItems,
   getRestaurant,
   getRestaurants,
@@ -72,6 +73,17 @@ const publicRoutes = async (router: FastifyInstance) => {
       },
     },
     getItems
+  );
+
+  router.get(
+    "/restaurant/item",
+    {
+      schema: {
+        ...SchemaOpts,
+        querystring: $ref("getItemSchema"),
+      },
+    },
+    getItem
   );
 };
 
