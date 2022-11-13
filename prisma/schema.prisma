@@ -129,13 +129,15 @@ model Order {
   userId       String?
   Restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id])
   restaurantId String?
-  item         OrderedItem[]
+  items        OrderedItem[]
 }
 
 model OrderedItem {
   item      Item     @relation(fields: [itemId], references: [id])
   itemId    Int
   quantity  Int
+  price     Int
+  variation String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Order     Order    @relation(fields: [orderId], references: [id])

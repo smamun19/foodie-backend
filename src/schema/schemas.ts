@@ -197,6 +197,17 @@ const getItemSchema = z.object({
   id: z.number(),
 });
 
+const orderItemSchema = z.object({
+  restaurantId: z.string(),
+  data: z
+    .object({
+      itemId: z.number(),
+      price: z.number(),
+      quantity: z.number(),
+      variation: z.string().optional(),
+    })
+    .array(),
+});
 export type CreateVoucherInput = z.infer<typeof createVoucherSchema>;
 export type UpdateVoucherInput = z.infer<typeof updateVoucherSchema>;
 export type FindVoucherInput = z.infer<typeof findVoucherSchema>;
@@ -225,6 +236,7 @@ export type EditRestaurantInput = z.infer<typeof editRestaurantSchema>;
 export type AddItemInput = z.infer<typeof addItemSchema>;
 export type ByIdInput = z.infer<typeof getByIdSchema>;
 export type GetItemInput = z.infer<typeof getItemSchema>;
+export type OrderItemInput = z.infer<typeof orderItemSchema>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createUserSchema,
@@ -252,4 +264,5 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   addItemSchema,
   getByIdSchema,
   getItemSchema,
+  orderItemSchema,
 });

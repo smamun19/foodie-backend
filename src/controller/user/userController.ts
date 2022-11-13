@@ -10,6 +10,7 @@ import {
   EditAddressInput,
   RemoveAddressInput,
   GetGeoAddressInput,
+  OrderItemInput,
 } from "../../schema/schemas";
 import { getGeoAddress } from "../../utils/geocoder";
 
@@ -150,4 +151,25 @@ export const geoAddress = async (
   const result = await getGeoAddress(lat, lon);
 
   return resHandler(res, 200, "Success", result);
+};
+
+export const orderItem = async (
+  req: FastifyRequest<{ Body: OrderItemInput }>,
+  res: FastifyReply
+) => {
+  const result = await prisma.user.update({
+    where: { id: req.user.id },
+    data: {
+      orders: {
+        create: {
+          restaurantId: req.body.restaurantId,
+          items: {
+            createMany: { data: req.body.data },
+          },
+        },
+      },
+    },
+  });
+
+  return resHandler(res, 200, "Success");
 };
