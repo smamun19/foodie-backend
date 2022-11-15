@@ -140,19 +140,18 @@ const userRoutes = async (router: FastifyInstance) => {
     {
       schema: {
         ...SchemaOpts,
-        body: $ref("orderItemSchema"),
+        body: $ref("createOrderSchema"),
       },
       preValidation: [router.auth],
     },
     createOrder
   );
 
-  router.post(
-    "/order/current",
+  router.get(
+    "/current-order",
     {
       schema: {
         ...SchemaOpts,
-        body: $ref("getByStringIdSchema"),
       },
       preValidation: [router.auth],
     },

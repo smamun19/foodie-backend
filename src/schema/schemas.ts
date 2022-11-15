@@ -197,10 +197,11 @@ const getByNumIdSchema = z.object({
   id: z.number(),
 });
 
-const orderItemSchema = z.object({
+const createOrderSchema = z.object({
   restaurantId: z.string(),
   totalFee: z.number(),
   subTotalFee: z.number(),
+  voucherId: z.number().optional(),
   data: z
     .object({
       itemId: z.number(),
@@ -239,7 +240,7 @@ export type EditRestaurantInput = z.infer<typeof editRestaurantSchema>;
 export type AddItemInput = z.infer<typeof addItemSchema>;
 export type ByStringIdInput = z.infer<typeof getByStringIdSchema>;
 export type ByNumIdInput = z.infer<typeof getByNumIdSchema>;
-export type OrderItemInput = z.infer<typeof orderItemSchema>;
+export type CreateOrderInput = z.infer<typeof createOrderSchema>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createUserSchema,
@@ -267,5 +268,5 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   addItemSchema,
   getByStringIdSchema,
   getByNumIdSchema,
-  orderItemSchema,
+  createOrderSchema,
 });

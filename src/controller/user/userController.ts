@@ -10,8 +10,8 @@ import {
   EditAddressInput,
   RemoveAddressInput,
   GetGeoAddressInput,
-  OrderItemInput,
   ByStringIdInput,
+  CreateOrderInput,
 } from "../../schema/schemas";
 import { getGeoAddress } from "../../utils/geocoder";
 
@@ -154,10 +154,11 @@ export const geoAddress = async (
   return resHandler(res, 200, "Success", result);
 };
 
-export const orderItem = async (
-  req: FastifyRequest<{ Body: OrderItemInput }>,
+export const createOrder = async (
+  req: FastifyRequest<{ Body: CreateOrderInput }>,
   res: FastifyReply
 ) => {
+  const { data, restaurantId, subTotalFee, totalFee, voucherId } = req.body;
   const { orders } = await prisma.user.update({
     where: { id: req.user.id },
     select: {
@@ -169,11 +170,12 @@ export const orderItem = async (
     data: {
       orders: {
         create: {
-          restaurantId: req.body.restaurantId,
-          subTotalFee: req.body.subTotalFee,
-          TotalFee: req.body.totalFee,
+          restaurantId,
+          subTotalFee,
+          totalFee,
+          voucherId,
           items: {
-            createMany: { data: req.body.data },
+            createMany: { data },
           },
         },
       },
@@ -184,13 +186,14 @@ export const orderItem = async (
 };
 
 export const currentOrder = async (
-  req: FastifyRequest<{ Body: ByStringIdInput }>,
+  req: FastifyRequest<{ Querystring: ByStringIdInput }>,
   res: FastifyReply
 ) => {
   const order = await prisma.order.findUnique({
-    where: { id: req.body.id },
+    where: { id: req.query.id },
     include: {
-      Restaurant: { select: { title: true } },
+      restaurant: { select: { title: true } },
+      voucher: { select: { name: true, value: true } },
       items: { include: { item: { select: { name: true } } } },
     },
     rejectOnNotFound: rejectOnNotFound(),
