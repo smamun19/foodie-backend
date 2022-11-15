@@ -11,6 +11,7 @@ import {
   RemoveAddressInput,
   GetGeoAddressInput,
   OrderItemInput,
+  ByStringIdInput,
 } from "../../schema/schemas";
 import { getGeoAddress } from "../../utils/geocoder";
 
@@ -157,12 +158,20 @@ export const orderItem = async (
   req: FastifyRequest<{ Body: OrderItemInput }>,
   res: FastifyReply
 ) => {
-  const result = await prisma.user.update({
+  const { orders } = await prisma.user.update({
     where: { id: req.user.id },
+    select: {
+      orders: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+      },
+    },
     data: {
       orders: {
         create: {
           restaurantId: req.body.restaurantId,
+          subTotalFee: req.body.subTotalFee,
+          TotalFee: req.body.totalFee,
           items: {
             createMany: { data: req.body.data },
           },
@@ -171,5 +180,21 @@ export const orderItem = async (
     },
   });
 
-  return resHandler(res, 200, "Success");
+  return resHandler(res, 201, "Success", orders[0]);
+};
+
+export const currentOrder = async (
+  req: FastifyRequest<{ Body: ByStringIdInput }>,
+  res: FastifyReply
+) => {
+  const order = await prisma.order.findUnique({
+    where: { id: req.body.id },
+    include: {
+      Restaurant: { select: { title: true } },
+      items: { include: { item: { select: { name: true } } } },
+    },
+    rejectOnNotFound: rejectOnNotFound(),
+  });
+
+  return resHandler(res, 200, "Success", order);
 };

@@ -12,7 +12,8 @@ import {
   getAddresses,
   removeAddress,
   geoAddress,
-  orderItem,
+  currentOrder,
+  createOrder,
 } from "../controller/user/userController";
 
 const SchemaOpts = { tags: ["User"], security: [{ jwt: [] }] };
@@ -143,7 +144,19 @@ const userRoutes = async (router: FastifyInstance) => {
       },
       preValidation: [router.auth],
     },
-    orderItem
+    createOrder
+  );
+
+  router.post(
+    "/order/current",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("getByStringIdSchema"),
+      },
+      preValidation: [router.auth],
+    },
+    currentOrder
   );
 };
 

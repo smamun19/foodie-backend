@@ -130,6 +130,8 @@ model Order {
   Restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id])
   restaurantId String?
   items        OrderedItem[]
+  subTotalFee  Int
+  TotalFee     Int
 }
 
 model OrderedItem {

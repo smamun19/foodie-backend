@@ -1,9 +1,9 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import prisma from "../../db/prisma";
 import {
-  ByIdInput,
+  ByNumIdInput,
+  ByStringIdInput,
   GetHelpCenterQueryInput,
-  GetItemInput,
 } from "../../schema/schemas";
 import { KnownError, rejectOnNotFound, resHandler } from "../../utils/response";
 
@@ -66,7 +66,7 @@ export const getAllRestaurants = async (
 };
 
 export const getRestaurant = async (
-  req: FastifyRequest<{ Querystring: ByIdInput }>,
+  req: FastifyRequest<{ Querystring: ByStringIdInput }>,
   res: FastifyReply
 ) => {
   const result = await prisma.restaurant.findFirst({
@@ -80,7 +80,7 @@ export const getRestaurant = async (
 };
 
 export const getItems = async (
-  req: FastifyRequest<{ Querystring: ByIdInput }>,
+  req: FastifyRequest<{ Querystring: ByStringIdInput }>,
   res: FastifyReply
 ) => {
   const restaurant = await prisma.restaurant.findFirst({
@@ -119,7 +119,7 @@ export const getItems = async (
 };
 
 export const getItem = async (
-  req: FastifyRequest<{ Querystring: GetItemInput }>,
+  req: FastifyRequest<{ Querystring: ByNumIdInput }>,
   res: FastifyReply
 ) => {
   const item = await prisma.item.findFirst({

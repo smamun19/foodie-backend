@@ -58,7 +58,7 @@ const publicRoutes = async (router: FastifyInstance) => {
     {
       schema: {
         ...SchemaOpts,
-        querystring: $ref("getByIdSchema"),
+        querystring: $ref("getByStringIdSchema"),
       },
     },
     getRestaurant
@@ -69,7 +69,7 @@ const publicRoutes = async (router: FastifyInstance) => {
     {
       schema: {
         ...SchemaOpts,
-        querystring: $ref("getByIdSchema"),
+        querystring: $ref("getByStringIdSchema"),
       },
     },
     getItems
@@ -80,7 +80,7 @@ const publicRoutes = async (router: FastifyInstance) => {
     {
       schema: {
         ...SchemaOpts,
-        querystring: $ref("getItemSchema"),
+        querystring: $ref("getByNumIdSchema"),
       },
     },
     getItem
