@@ -8,10 +8,21 @@ import {
   getItems,
   getRestaurant,
   getRestaurants,
+  //test,
 } from "../controller/public/publicController";
 import { $ref } from "../schema/schemas";
 const SchemaOpts = { tags: ["Public"] };
 const publicRoutes = async (router: FastifyInstance) => {
+  // router.get(
+  //   "/test",
+  //   {
+  //     schema: {
+  //       ...SchemaOpts,
+  //     },
+  //   },
+  //   test
+  // );
+
   router.get(
     "/help-center",
     {
