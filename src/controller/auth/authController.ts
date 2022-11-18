@@ -60,8 +60,12 @@ export const signin = async (
   });
 
   const currentOrder = await prisma.order.findFirst({
-    where: { userId: id, status: { notIn: ["Cancelled", "Rejected"] } },
+    where: {
+      userId: id,
+      status: { notIn: ["Cancelled", "Rejected", "Completed"] },
+    },
     select: { id: true },
+    orderBy: { createdAt: "desc" },
   });
 
   const result = await comparePassword(pass, password);

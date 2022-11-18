@@ -193,6 +193,10 @@ const getByStringIdSchema = z.object({
   id: z.string(),
 });
 
+const findCurrentOrderSchema = z.object({
+  id: z.string().optional(),
+});
+
 const getByNumIdSchema = z.object({
   id: z.number(),
 });
@@ -240,6 +244,7 @@ export type EditRestaurantInput = z.infer<typeof editRestaurantSchema>;
 export type AddItemInput = z.infer<typeof addItemSchema>;
 export type ByStringIdInput = z.infer<typeof getByStringIdSchema>;
 export type ByNumIdInput = z.infer<typeof getByNumIdSchema>;
+export type FindCurrentOrderInput = z.infer<typeof findCurrentOrderSchema>;
 export type CreateOrderInput = z.infer<typeof createOrderSchema>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
@@ -269,4 +274,5 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   getByStringIdSchema,
   getByNumIdSchema,
   createOrderSchema,
+  findCurrentOrderSchema,
 });

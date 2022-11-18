@@ -154,6 +154,10 @@ model OrderedItem {
 enum OrderStatus {
   Pending
   Accepted
+  Preparing
+  Delaying
+  Picked
+  Completed
   Rejected
   Cancelled
 }

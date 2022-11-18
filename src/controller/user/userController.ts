@@ -12,6 +12,7 @@ import {
   GetGeoAddressInput,
   ByStringIdInput,
   CreateOrderInput,
+  FindCurrentOrderInput,
 } from "../../schema/schemas";
 import { getGeoAddress } from "../../utils/geocoder";
 
@@ -197,6 +198,23 @@ export const currentOrder = async (
       items: { include: { item: { select: { name: true } } } },
     },
     rejectOnNotFound: rejectOnNotFound(),
+  });
+
+  return resHandler(res, 200, "Success", order);
+};
+
+export const findCurrentOrder = async (
+  req: FastifyRequest<{ Body: FindCurrentOrderInput }>,
+  res: FastifyReply
+) => {
+  const order = await prisma.order.findFirst({
+    where: {
+      id: req.body.id,
+      status: { notIn: ["Completed", "Cancelled", "Rejected"] },
+    },
+    include: {
+      restaurant: { select: { title: true } },
+    },
   });
 
   return resHandler(res, 200, "Success", order);

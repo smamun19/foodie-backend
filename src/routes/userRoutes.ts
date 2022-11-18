@@ -14,6 +14,7 @@ import {
   geoAddress,
   currentOrder,
   createOrder,
+  findCurrentOrder,
 } from "../controller/user/userController";
 
 const SchemaOpts = { tags: ["User"], security: [{ jwt: [] }] };
@@ -156,6 +157,18 @@ const userRoutes = async (router: FastifyInstance) => {
       preValidation: [router.auth],
     },
     currentOrder
+  );
+
+  router.post(
+    "/find-current-order",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("findCurrentOrderSchema"),
+      },
+      preValidation: [router.auth],
+    },
+    findCurrentOrder
   );
 };
 
