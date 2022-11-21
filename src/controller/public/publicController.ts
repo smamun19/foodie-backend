@@ -1,6 +1,10 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import prisma from "../../db/prisma";
-import { GetHelpCenterQueryInput } from "../../schema/schemas";
+import {
+  ByNumIdInput,
+  ByStringIdInput,
+  GetHelpCenterQueryInput,
+} from "../../schema/schemas";
 import { KnownError, rejectOnNotFound, resHandler } from "../../utils/response";
 
 export const getHelpCenter = async (req: FastifyRequest, res: FastifyReply) => {
@@ -22,4 +26,108 @@ export const getHelpCenterQuery = async (
   });
 
   resHandler(res, 200, "Success", result);
+};
+
+export const getRestaurants = async (
+  req: FastifyRequest,
+  res: FastifyReply
+) => {
+  const result = await prisma.restaurant.groupBy({
+    where: { isActive: true },
+    by: ["type"],
+    orderBy: { type: "asc" },
+  });
+
+  const data = await Promise.all(
+    result.map((e) =>
+      prisma.restaurant.findMany({
+        where: { type: e.type },
+        include: { photo: true },
+      })
+    )
+  );
+
+  const final = result.map((e, i) => ({ type: e.type, data: data[i] }));
+
+  resHandler(res, 200, "Success", final);
+};
+
+export const getAllRestaurants = async (
+  req: FastifyRequest,
+  res: FastifyReply
+) => {
+  const result = await prisma.restaurant.findMany({
+    where: { isActive: true },
+
+    include: { photo: true },
+  });
+
+  resHandler(res, 200, "Success", result);
+};
+
+export const getRestaurant = async (
+  req: FastifyRequest<{ Querystring: ByStringIdInput }>,
+  res: FastifyReply
+) => {
+  const result = await prisma.restaurant.findFirst({
+    where: { id: req.query.id, isActive: true },
+
+    include: { photo: true },
+    rejectOnNotFound: rejectOnNotFound(),
+  });
+
+  resHandler(res, 200, "Success", result);
+};
+
+export const getItems = async (
+  req: FastifyRequest<{ Querystring: ByStringIdInput }>,
+  res: FastifyReply
+) => {
+  const restaurant = await prisma.restaurant.findFirst({
+    where: { id: req.query.id, isActive: true },
+
+    include: { photo: true },
+    rejectOnNotFound: rejectOnNotFound(),
+  });
+
+  const result = await prisma.item.groupBy({
+    where: { restaurantId: req.query.id },
+    by: ["category"],
+    orderBy: { category: "asc" },
+  });
+
+  const data = await Promise.all(
+    result.map((e) =>
+      prisma.restaurant.findFirst({
+        where: { id: req.query.id },
+        include: {
+          item: {
+            where: { category: e.category },
+            include: { photo: true, variation: true },
+          },
+        },
+      })
+    )
+  );
+
+  const finalResult = data.map((e, i) => ({
+    title: result[i].category,
+    data: e?.item,
+  }));
+
+  resHandler(res, 200, "Success", { restaurantItems: finalResult, restaurant });
+};
+
+export const getItem = async (
+  req: FastifyRequest<{ Querystring: ByNumIdInput }>,
+  res: FastifyReply
+) => {
+  const item = await prisma.item.findFirst({
+    where: { id: req.query.id, isActive: true },
+    include: { variation: true },
+
+    rejectOnNotFound: rejectOnNotFound(),
+  });
+
+  resHandler(res, 200, "Success", item);
 };

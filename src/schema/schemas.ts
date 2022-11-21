@@ -152,6 +152,70 @@ const getHelpCenterQuerySchema = z.object({
   id: z.number(),
 });
 
+const addRestaurantSchema = z.object({
+  title: z.string(),
+  openingFrom: z.number().optional(),
+  openingTo: z.number().optional(),
+  details: z.string().optional(),
+  deliveryTime: z.number().optional(),
+  type: z.string().optional(),
+});
+const editRestaurantSchema = z.object({
+  id: z.string(),
+  title: z.string().optional(),
+  details: z.string().optional().optional(),
+  openingFrom: z.number().optional(),
+  openingTo: z.number().optional(),
+  deliveryTime: z.number().optional(),
+  type: z.string().optional(),
+});
+
+const uploadPhotoSchema = z.object({
+  id: z.string(),
+  file: z.string(),
+});
+
+const variationSchema = z.object({
+  price: z.number(),
+  name: z.string(),
+});
+
+const addItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  price: z.number(),
+  category: z.string(),
+  details: z.string().optional(),
+  variation: z.array(variationSchema).optional(),
+});
+
+const getByStringIdSchema = z.object({
+  id: z.string(),
+});
+
+const findCurrentOrderSchema = z.object({
+  id: z.string().optional(),
+});
+
+const getByNumIdSchema = z.object({
+  id: z.number(),
+});
+
+const createOrderSchema = z.object({
+  restaurantId: z.string(),
+  totalFee: z.number(),
+  subTotalFee: z.number(),
+  voucherId: z.number().optional(),
+  data: z
+    .object({
+      itemId: z.number(),
+      price: z.number(),
+      quantity: z.number(),
+      variation: z.string().optional(),
+    })
+    .array(),
+});
+
 export type CreateVoucherInput = z.infer<typeof createVoucherSchema>;
 export type UpdateVoucherInput = z.infer<typeof updateVoucherSchema>;
 export type FindVoucherInput = z.infer<typeof findVoucherSchema>;
@@ -174,6 +238,14 @@ export type EditHelpCenterQueryInput = z.infer<
   typeof editHelpCenterQuerySchema
 >;
 export type GetHelpCenterQueryInput = z.infer<typeof getHelpCenterQuerySchema>;
+export type AddRestaurantInput = z.infer<typeof addRestaurantSchema>;
+export type UploadPhotoType = z.infer<typeof uploadPhotoSchema>;
+export type EditRestaurantInput = z.infer<typeof editRestaurantSchema>;
+export type AddItemInput = z.infer<typeof addItemSchema>;
+export type ByStringIdInput = z.infer<typeof getByStringIdSchema>;
+export type ByNumIdInput = z.infer<typeof getByNumIdSchema>;
+export type FindCurrentOrderInput = z.infer<typeof findCurrentOrderSchema>;
+export type CreateOrderInput = z.infer<typeof createOrderSchema>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createUserSchema,
@@ -196,4 +268,11 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   addHelpCenterQuerySchema,
   editHelpCenterQuerySchema,
   getHelpCenterQuerySchema,
+  addRestaurantSchema,
+  editRestaurantSchema,
+  addItemSchema,
+  getByStringIdSchema,
+  getByNumIdSchema,
+  createOrderSchema,
+  findCurrentOrderSchema,
 });

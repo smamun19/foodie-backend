@@ -1,4 +1,4 @@
-import { JWT } from "fastify-jwt";
+import { JWT } from "@fastify/jwt";
 
 export enum Role {
   VENDOR,
@@ -25,7 +25,7 @@ declare module "fastify" {
     auth: any;
   }
 }
-declare module "fastify-jwt" {
+declare module "@fastify/jwt" {
   interface FastifyJWT {
     user: {
       id: string;

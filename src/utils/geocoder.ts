@@ -1,6 +1,7 @@
 import GeoCoder, { GenericOptions } from "node-geocoder";
 
 const options: GenericOptions = {
+  // @ts-ignore
   provider: "virtualearth",
   apiKey: process.env.BING_API_KEY,
 };

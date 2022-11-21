@@ -2,12 +2,17 @@ import { FastifyInstance } from "fastify";
 import {
   addHelpCenter,
   addHelpCenterQuery,
+  addItem,
+  addRestaurant,
   addVoucher,
   editHelpCenter,
   editHelpCenterQuery,
+  editRestaurant,
   editVoucher,
+  uploadRestaurantPhoto,
 } from "../controller/admin/adminController";
 import { $ref } from "../schema/schemas";
+import { uploadPreHandler } from "../utils/handler";
 
 // Admin security will be implemented later for convenience
 const SchemaOpts = { tags: ["Admin"] };
@@ -68,6 +73,54 @@ const adminRoutes = async (router: FastifyInstance) => {
   );
 
   router.post(
+    "/restaurant/add",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("addRestaurantSchema"),
+      },
+    },
+    addRestaurant
+  );
+
+  router.post(
+    "/restaurant/edit",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("editRestaurantSchema"),
+      },
+    },
+    editRestaurant
+  );
+
+  router.post(
+    "/restaurant/upload",
+    {
+      preValidation: uploadPreHandler,
+      schema: {
+        ...SchemaOpts,
+        consumes: ["multipart/form-data"],
+
+        body: {
+          type: "object",
+          required: ["id", "file"],
+          properties: {
+            id: {
+              type: "string",
+            },
+            file: {
+              type: "string",
+              format: "binary",
+            },
+          },
+        },
+      },
+    },
+    uploadRestaurantPhoto
+  );
+
+  router.post(
     "/helpCenter/edit-query",
     {
       schema: {
@@ -76,6 +129,17 @@ const adminRoutes = async (router: FastifyInstance) => {
       },
     },
     editHelpCenterQuery
+  );
+
+  router.post(
+    "/restaurant/add-item",
+    {
+      schema: {
+        ...SchemaOpts,
+        body: $ref("addItemSchema"),
+      },
+    },
+    addItem
   );
 };
 

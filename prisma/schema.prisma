@@ -35,7 +35,7 @@ model User {
 }
 
 model Location {
-  id                   Int      @id @default(autoincrement())
+  id                   Int         @id @default(autoincrement())
   name                 String
   details              String
   label                String?
@@ -43,10 +43,12 @@ model Location {
   long                 Float
   extDetails           String?
   deliveryInstructions String?
-  User                 User     @relation(fields: [userId], references: [id])
-  userId               String
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  User                 User?       @relation(fields: [userId], references: [id])
+  userId               String?
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  Restaurant           Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId         String?     @unique
 }
 
 model Voucher {
@@ -57,6 +59,7 @@ model Voucher {
   details   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  order     Order[]
 }
 
 model Restaurant {
@@ -65,13 +68,14 @@ model Restaurant {
   isActive     Boolean     @default(true)
   details      String?
   item         Item[]
-  openingFrom  Int
-  openingTo    Int
-  location     String
-  photo        Attachment? @relation(fields: [attachmentId], references: [id])
+  openingFrom  Int         @default(10)
+  openingTo    Int         @default(22)
+  deliveryTime Int         @default(24)
+  type         String      @default("Main dishes")
+  location     Location?
+  photo        Attachment?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
-  attachmentId String
   User         User?       @relation(fields: [userId], references: [id])
   userId       String?
   orders       Order[]
@@ -82,14 +86,13 @@ model Item {
   name         String
   price        Float
   category     String
-  photo        Attachment?   @relation(fields: [attachmentId], references: [id])
+  photo        Attachment?
   isActive     Boolean       @default(true)
   details      String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  Restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id])
-  restaurantId String?
-  attachmentId String?
+  Restaurant   Restaurant    @relation(fields: [restaurantId], references: [id])
+  restaurantId String
   variation    Variation[]
   OrderedItem  OrderedItem[]
 }
@@ -105,15 +108,17 @@ model Variation {
 }
 
 model Attachment {
-  id         String       @id @default(cuid())
-  name       String
-  type       String
-  path       String[]
-  host       String       @default("/")
-  Item       Item[]
-  Restaurant Restaurant[]
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  id           String      @id @default(cuid())
+  name         String
+  type         String
+  path         String[]
+  host         String      @default("/static/")
+  Item         Item?       @relation(fields: [itemId], references: [id])
+  itemId       Int?        @unique
+  Restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId String?     @unique
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
 
 model Order {
@@ -123,26 +128,36 @@ model Order {
   updatedAt    DateTime      @updatedAt
   User         User?         @relation(fields: [userId], references: [id])
   userId       String?
-  Restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id])
+  restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id])
   restaurantId String?
-  item         OrderedItem[]
+  items        OrderedItem[]
+  subTotalFee  Int
+  totalFee     Int
+  voucher      Voucher?      @relation(fields: [voucherId], references: [id])
+  voucherId    Int?
 }
 
 model OrderedItem {
   item      Item     @relation(fields: [itemId], references: [id])
   itemId    Int
   quantity  Int
+  price     Int
+  variation String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Order     Order    @relation(fields: [orderId], references: [id])
   orderId   String
 
-  @@id([orderId, itemId])
+  @@id([orderId, itemId, price])
 }
 
 enum OrderStatus {
   Pending
   Accepted
+  Preparing
+  Delaying
+  Picked
+  Completed
   Rejected
   Cancelled
 }

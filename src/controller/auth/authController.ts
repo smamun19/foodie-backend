@@ -59,6 +59,15 @@ export const signin = async (
     rejectOnNotFound: () => new KnownError(404, "User not found"),
   });
 
+  const currentOrder = await prisma.order.findFirst({
+    where: {
+      userId: id,
+      status: { notIn: ["Cancelled", "Rejected", "Completed"] },
+    },
+    select: { id: true },
+    orderBy: { createdAt: "desc" },
+  });
+
   const result = await comparePassword(pass, password);
 
   if (!result) {
@@ -78,6 +87,7 @@ export const signin = async (
     phone,
     roles,
     address: addresses,
+    currentOrderId: currentOrder?.id,
     createdAt,
     updatedAt,
   });

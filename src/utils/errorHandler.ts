@@ -9,7 +9,9 @@ export const defaultErrorHandler = (
   if (validation) {
     res.status(400).send({
       statusCode: 400,
-      message: `${validation[0].dataPath.slice(1)} ${validation[0].message}`,
+      message: `${validation[0].instancePath.slice(1)} ${
+        validation[0].message
+      }`,
     });
     return;
   }

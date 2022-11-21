@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { VerifyPayloadType } from "fastify-jwt";
+import { VerifyPayloadType } from "@fastify/jwt";
 import { KnownError } from "./response";
 import { Roles } from "./types/types";
 

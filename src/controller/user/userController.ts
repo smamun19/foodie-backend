@@ -10,6 +10,9 @@ import {
   EditAddressInput,
   RemoveAddressInput,
   GetGeoAddressInput,
+  ByStringIdInput,
+  CreateOrderInput,
+  FindCurrentOrderInput,
 } from "../../schema/schemas";
 import { getGeoAddress } from "../../utils/geocoder";
 
@@ -150,4 +153,69 @@ export const geoAddress = async (
   const result = await getGeoAddress(lat, lon);
 
   return resHandler(res, 200, "Success", result);
+};
+
+export const createOrder = async (
+  req: FastifyRequest<{ Body: CreateOrderInput }>,
+  res: FastifyReply
+) => {
+  const { data, restaurantId, subTotalFee, totalFee, voucherId } = req.body;
+  const { orders } = await prisma.user.update({
+    where: { id: req.user.id },
+    select: {
+      orders: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+      },
+    },
+    data: {
+      orders: {
+        create: {
+          restaurantId,
+          subTotalFee,
+          totalFee,
+          voucherId,
+          items: {
+            createMany: { data },
+          },
+        },
+      },
+    },
+  });
+
+  return resHandler(res, 201, "Success", orders[0]);
+};
+
+export const currentOrder = async (
+  req: FastifyRequest<{ Querystring: ByStringIdInput }>,
+  res: FastifyReply
+) => {
+  const order = await prisma.order.findUnique({
+    where: { id: req.query.id },
+    include: {
+      restaurant: { select: { title: true } },
+      voucher: { select: { name: true, value: true } },
+      items: { include: { item: { select: { name: true } } } },
+    },
+    rejectOnNotFound: rejectOnNotFound(),
+  });
+
+  return resHandler(res, 200, "Success", order);
+};
+
+export const findCurrentOrder = async (
+  req: FastifyRequest<{ Body: FindCurrentOrderInput }>,
+  res: FastifyReply
+) => {
+  const order = await prisma.order.findFirst({
+    where: {
+      id: req.body.id,
+      status: { notIn: ["Completed", "Cancelled", "Rejected"] },
+    },
+    include: {
+      restaurant: { select: { title: true } },
+    },
+  });
+
+  return resHandler(res, 200, "Success", order);
 };
