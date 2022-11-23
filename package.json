@@ -6,12 +6,12 @@
   "author": "<smamun19@gmail.com>",
   "license": "MIT",
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
-    "dev": "ts-node --transpile-only src/index.ts ",
+    "dev": "tsnd --respawn --transpile-only --exit-child src/index.ts ",
     "build": "tsc -p tsconfig.json",
-    "start": "node -r dotenv/config index.js",
+    "start": "node -r dotenv/config dist/src/index.js",
     "migrate": "prisma migrate dev",
     "reset": "prisma migrate reset",
     "studio": "prisma studio",
@@ -41,7 +41,7 @@
     "@types/node-geocoder": "^3.24.5",
     "@types/nodemailer": "^6.4.4",
     "prisma": "^3.11.1",
-    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.3"
   }
 }
