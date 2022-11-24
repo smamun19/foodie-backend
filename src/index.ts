@@ -3,6 +3,8 @@ import fastifySwagger from "@fastify/swagger";
 import fastifyJwt from "@fastify/jwt";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import fastifyMultipart from "@fastify/multipart";
+import dotenv from "dotenv";
+dotenv.config();
 
 import productsRoutes from "./routes/porductRoutes";
 import userRoutes from "./routes/userRoutes";

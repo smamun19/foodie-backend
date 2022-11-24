@@ -2,7 +2,7 @@
 CREATE TYPE "Role" AS ENUM ('VENDOR', 'USER', 'PREMIUM', 'ADMIN', 'MODERATOR', 'BANNED');
 
 -- CreateEnum
-CREATE TYPE "OrderStatus" AS ENUM ('Pending', 'Accepted', 'Rejected', 'Cancelled');
+CREATE TYPE "OrderStatus" AS ENUM ('Pending', 'Accepted', 'Preparing', 'Delaying', 'Picked', 'Completed', 'Rejected', 'Cancelled');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -61,7 +61,6 @@ CREATE TABLE "Restaurant" (
     "type" TEXT NOT NULL DEFAULT E'Main dishes',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT,
 
     CONSTRAINT "Restaurant_pkey" PRIMARY KEY ("id")
 );
@@ -86,7 +85,7 @@ CREATE TABLE "Variation" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
-    "itemId" INTEGER,
+    "itemId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -99,7 +98,7 @@ CREATE TABLE "Attachment" (
     "name" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "path" TEXT[],
-    "host" TEXT NOT NULL DEFAULT E'/',
+    "host" TEXT NOT NULL DEFAULT E'/static/',
     "itemId" INTEGER,
     "restaurantId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -114,8 +113,11 @@ CREATE TABLE "Order" (
     "status" "OrderStatus" NOT NULL DEFAULT E'Pending',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT,
-    "restaurantId" TEXT,
+    "userId" TEXT NOT NULL,
+    "restaurantId" TEXT NOT NULL,
+    "subTotalFee" INTEGER NOT NULL,
+    "totalFee" INTEGER NOT NULL,
+    "voucherId" INTEGER,
 
     CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
 );
@@ -124,11 +126,13 @@ CREATE TABLE "Order" (
 CREATE TABLE "OrderedItem" (
     "itemId" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL,
+    "price" INTEGER NOT NULL,
+    "variation" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "orderId" TEXT NOT NULL,
 
-    CONSTRAINT "OrderedItem_pkey" PRIMARY KEY ("orderId","itemId")
+    CONSTRAINT "OrderedItem_pkey" PRIMARY KEY ("orderId","itemId","price")
 );
 
 -- CreateTable
@@ -157,6 +161,12 @@ CREATE TABLE "HelpCenterQuery" (
     CONSTRAINT "HelpCenterQuery_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "_RestaurantToUser" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -169,6 +179,12 @@ CREATE UNIQUE INDEX "Attachment_itemId_key" ON "Attachment"("itemId");
 -- CreateIndex
 CREATE UNIQUE INDEX "Attachment_restaurantId_key" ON "Attachment"("restaurantId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "_RestaurantToUser_AB_unique" ON "_RestaurantToUser"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_RestaurantToUser_B_index" ON "_RestaurantToUser"("B");
+
 -- AddForeignKey
 ALTER TABLE "Location" ADD CONSTRAINT "Location_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -176,13 +192,10 @@ ALTER TABLE "Location" ADD CONSTRAINT "Location_userId_fkey" FOREIGN KEY ("userI
 ALTER TABLE "Location" ADD CONSTRAINT "Location_restaurantId_fkey" FOREIGN KEY ("restaurantId") REFERENCES "Restaurant"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Restaurant" ADD CONSTRAINT "Restaurant_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Item" ADD CONSTRAINT "Item_restaurantId_fkey" FOREIGN KEY ("restaurantId") REFERENCES "Restaurant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Variation" ADD CONSTRAINT "Variation_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES "Item"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Variation" ADD CONSTRAINT "Variation_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES "Item"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Attachment" ADD CONSTRAINT "Attachment_restaurantId_fkey" FOREIGN KEY ("restaurantId") REFERENCES "Restaurant"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -191,10 +204,13 @@ ALTER TABLE "Attachment" ADD CONSTRAINT "Attachment_restaurantId_fkey" FOREIGN K
 ALTER TABLE "Attachment" ADD CONSTRAINT "Attachment_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES "Item"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Order" ADD CONSTRAINT "Order_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Order" ADD CONSTRAINT "Order_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Order" ADD CONSTRAINT "Order_restaurantId_fkey" FOREIGN KEY ("restaurantId") REFERENCES "Restaurant"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Order" ADD CONSTRAINT "Order_voucherId_fkey" FOREIGN KEY ("voucherId") REFERENCES "Voucher"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Order" ADD CONSTRAINT "Order_restaurantId_fkey" FOREIGN KEY ("restaurantId") REFERENCES "Restaurant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "OrderedItem" ADD CONSTRAINT "OrderedItem_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES "Item"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -207,3 +223,9 @@ ALTER TABLE "HelpCenter" ADD CONSTRAINT "HelpCenter_userId_fkey" FOREIGN KEY ("u
 
 -- AddForeignKey
 ALTER TABLE "HelpCenterQuery" ADD CONSTRAINT "HelpCenterQuery_helpCenterId_fkey" FOREIGN KEY ("helpCenterId") REFERENCES "HelpCenter"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_RestaurantToUser" ADD CONSTRAINT "_RestaurantToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Restaurant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_RestaurantToUser" ADD CONSTRAINT "_RestaurantToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
